@@ -6,7 +6,16 @@ All javascript files are in in client/assests/javascript
 
     README Requirements:
 
-1.  DESCRIPTION OF FILES:
+1.  PROJECT:
+
+    - Movie Database Project
+
+2.  GROUP MEMBERS:
+
+    - Hilaire Djani
+    - Ebubechukwu Okelekwe
+
+3.  DESCRIPTION OF FILES:
 
     - Accounttype.html: This file is a webpage outlining a users account information. The information present includes the username, account type (user or contributer),
       a link to the users contributions/reviews page(link would only work when a user has enabled a contributer account), people which outlines all the actor, writers and
@@ -29,15 +38,6 @@ All javascript files are in in client/assests/javascript
     - index.css: Main stylesheet file for project front-end
 
     - accounttype.css: This css files styles Accounttype.html
-
-2.  PROJECT:
-
-    - Movie Database Project
-
-3.  GROUP MEMBERS:
-
-    - Hilaire Djani
-    - Ebubechukwu Okelekwe
 
 4.  OBJECTS USED:
 
@@ -85,5 +85,11 @@ All javascript files are in in client/assests/javascript
       - description
 
 5.  SETUP INSTRUCTIONS
+
     - The project contains a backend server which is not fully setup
     - For now, to explore the project, simply double-click on the static html pages found in "client/src" file to open them in a browser window
+
+6.  ADDITIONAL DYNAMIC BEHAVIOUR
+    Dynamic behaviour was added using bootstrap
+    - Opening login/register modal
+    - Display and animate carousel
