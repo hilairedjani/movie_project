@@ -1,0 +1,7 @@
+.movie-list-item {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}

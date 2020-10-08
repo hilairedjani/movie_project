@@ -36,6 +36,9 @@ const server = http.createServer((request, response) => {
         case "movies":
           break;
 
+        case "movie/:id":
+          break;
+
         case "top-movies":
           response.statusCode = 200;
           response.setHeader("Content-Type", "text/html");

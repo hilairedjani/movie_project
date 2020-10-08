@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Movies 55</title>
+
+    <link href="../assets/stylesheets/index.css" type="text/css" rel="stylesheet" />
 
     <!-- Bootstrap stylesheets CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -28,8 +30,8 @@
         integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
         crossorigin="anonymous"></script>
 
-    <script defer src="../assets/javascript/index.js"></script>
-
+    <script src="../assets/javascript/movies.js"></script>
+    <script src="../assets/javascript/index.js"></script>
 
 </head>
 
@@ -39,13 +41,23 @@
             <div class="col-md-8 offset-md-2">
                 <div class="row">
                     <div class="col-12">
-                        <h1><i class="fas fa-film"></i>&nbsp;Movies 55</h1>
+                        <div class="row">
+                            <div class="col-8">
+                                <h1><i class="fas fa-film"></i>&nbsp;Movies 55</h1>
+
+                            </div>
+                            <div class="col mr-auto mt-auto">
+                                <a href="#" class="font-weight-bold" data-toggle="modal"
+                                    data-target="#register-modal">REGISTER</a> | <a href="#" data-toggle="modal"
+                                    data-target="#login-modal" class="font-weight-bold">LOGIN</a>
+                            </div>
+                        </div>
                         <hr class="text-muted">
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col">
+                    <div class="col-md-10 offset-md-1">
                         <form class="form-inline my-2 my-lg-0 p-0 w-100">
                             <div class="row w-100">
                                 <div class="col">
@@ -60,8 +72,6 @@
 
                         </form>
                     </div>
-                    <div class="col-auto"><a href="#" class="font-weight-bold">REGISTER</a> | <a href="#"
-                            class="font-weight-bold">LOGIN</a></div>
                 </div>
 
                 <div class="row">
@@ -84,6 +94,64 @@
                                 <span class="sr-only">Next</span>
                             </a>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="user-email">Email</label>
+                                <input type="email" class="form-control" id="user-email">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">Password</label>
+                                <input type="password" class="form-control" id="user-password">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="register-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="user-email">Email</label>
+                                <input type="email" class="form-control" id="user-email">
+                            </div>
+                            <div class="form-group">
+                                <label for="user-password">Password</label>
+                                <input type="password" class="form-control" id="user-password">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="user-confirm-password">Confirm password</label>
+                                <input type="password" class="form-control" id="user-confirm-password">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>

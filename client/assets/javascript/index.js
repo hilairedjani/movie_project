@@ -3,18 +3,20 @@ function init() {
 }
 
 function fetchTopMovies() {
-  let topMovies;
+  let topMovies = movies;
+  displayTopMovies(topMovies);
+
   let request = new XMLHttpRequest();
 
-  request.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      topMovies = JSON.parse(this.responseText);
-      displayTopMovies(topMovies);
-    }
-  };
+  //   request.onreadystatechange = function () {
+  //     if (this.readyState == 4 && this.status == 200) {
+  //       topMovies = JSON.parse(this.responseText);
+  //       displayTopMovies(topMovies);
+  //     }
+  //   };
 
-  request.open("GET", "/top-movies");
-  request.send();
+  //   request.open("GET", "/top-movies");
+  //   request.send();
 }
 
 function displayTopMovies(movies) {
@@ -28,7 +30,7 @@ function displayTopMovies(movies) {
     );
 
     moviesCarouselInner.append(
-      `<div class="carousel-item ${i == 0 ? "active" : ""}">
+      `<div class="carousel-item movie-list-item ${i == 0 ? "active" : ""}" >
         <img src="${
           movies[i].Poster
         }" class="d-block w-100" height="750 alt="...">
@@ -40,3 +42,5 @@ function displayTopMovies(movies) {
     );
   }
 }
+
+function displayMovie(index) {}
