@@ -1,0 +1,23 @@
+{
+  "name": "movie_project",
+  "version": "1.0.0",
+  "description": "Movie Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hilairedjani/movie_project.git"
+  },
+  "author": "Hilaire Djani, Ebubechukwu Okelekwe",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hilairedjani/movie_project/issues"
+  },
+  "homepage": "https://github.com/hilairedjani/movie_project#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
