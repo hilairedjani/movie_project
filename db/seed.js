@@ -23,6 +23,7 @@ const { movies, people, users } = require("./index");
     movieObject.plot = rawMovies[rm].Plot;
     movieObject.rating = rawMovies[rm].Rated;
     movieObject.country = rawMovies[rm].Country;
+    movieObject.image = rawMovies[rm].Poster;
     movieObject.actors = [];
     movieObject.directors = [];
     movieObject.writers = [];

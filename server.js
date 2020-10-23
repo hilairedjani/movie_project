@@ -9,6 +9,10 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+// Set view engine::Pug
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "client/src"));
+
 // Apply app middleware
 app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: false }));
@@ -29,7 +33,7 @@ app.use("/api/people", require("./routes/api/people"));
 app.use("/api/users", require("./routes/api/users"));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "/client/public/index.html"));
+  res.sendFile(path.join(__dirname + "index"));
 });
 
 // Start server
