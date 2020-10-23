@@ -25,6 +25,8 @@ app.use((req, res, next) => {
 
 // Add routes
 app.use("/api/movies", require("./routes/api/movies"));
+app.use("/api/people", require("./routes/api/people"));
+app.use("/api/users", require("./routes/api/users"));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname + "/client/public/index.html"));

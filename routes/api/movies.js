@@ -3,9 +3,19 @@ const express = require("express");
 const router = express.Router();
 
 // Controller actions
-const { getMovies } = require("../../controllers/movies");
+const {
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  addActor,
+  addDirector,
+  addWriter,
+  deleteMovie,
+} = require("../../controllers/movies");
 
 // == GET ROUTES
+
 /**
  * @route GET api/movies
  * @description Get movies
@@ -14,10 +24,59 @@ const { getMovies } = require("../../controllers/movies");
  */
 router.get("/", getMovies);
 
+/**
+ * @route GET api/movies/:id
+ * @description Get movie by id
+ * @access Public
+ */
+router.get("/:id", getMovieById);
+
 // == POST ROUTES
+
+/**
+ * @route POST api/movies
+ * @description Create/add a movie
+ * @access Public
+ */
+router.post("/", createMovie);
 
 // == PUT/PATCH ROUTES
 
+/**
+ * @route PATCH api/movies/:id
+ * @description Update a given movie
+ * @access Public
+ */
+router.patch("/:id", updateMovie);
+
+/**
+ * @route PATCH api/movies/:id/actors/:actorId
+ * @description Add an actor to a given movie
+ * @access Public
+ */
+router.patch("/:id/actors/:actorId", addActor);
+
+/**
+ * @route PATCH api/movies/:id/directors/:directorId
+ * @description Add a director to a given movie
+ * @access Public
+ */
+router.patch("/:id/directors/:directorId", addDirector);
+
+/**
+ * @route PATCH api/movies/:id/writers/:writerId
+ * @description Add a writer to a given movie
+ * @access Public
+ */
+router.patch("/:id/writers/:writerId", addWriter);
+
 // == DELETE ROUTES
+
+/**
+ * @route DELETE api/movies/:id
+ * @description Delete a given movie
+ * @access Public
+ */
+router.delete("/:id", deleteMovie);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const rawMovies = require("./movie-data-short.json");
-const { movies, people } = require("./index");
+const { movies, people, users } = require("./index");
 
 (function seedDB() {
   let movieCount = 0;
@@ -142,7 +142,7 @@ const { movies, people } = require("./index");
         peopleCount++;
         writerObject = {};
         writerObject.id = peopleCount;
-        writerObject.rank = "director";
+        writerObject.rank = "writer";
         writerObject.firstname = firstname;
         writerObject.lastname = lastname;
 
@@ -163,6 +163,43 @@ const { movies, people } = require("./index");
     movies.push(movieObject);
   }
 
+  // Adding users
+  const user1 = {
+    firstname: "User",
+    lastname: "One",
+    email: "user1@test.com",
+    password: "password",
+    username: "userone",
+    role: "contributor",
+  };
+
+  console.log(`== Adding user ${user1.username} to database`);
+  users.push(user1);
+
+  const user2 = {
+    firstname: "User",
+    lastname: "Two",
+    email: "user2@test.com",
+    password: "password",
+    username: "usertwo",
+    role: "contributor",
+  };
+
+  console.log(`== Adding user ${user2.username} to database`);
+  users.push(user2);
+
+  const user3 = {
+    firstname: "John",
+    lastname: "Doe",
+    email: "johndoe@test.com",
+    password: "password",
+    username: "johndoe",
+    role: "user",
+  };
+
+  console.log(`== Adding user ${user3.username} to database`);
+  users.push(user3);
+
   // Write data to files
   console.log("== Writing movies to file db/movies.json");
   fs.writeFile("db/movies.json", JSON.stringify(movies), function (err) {
@@ -170,10 +207,16 @@ const { movies, people } = require("./index");
     console.log("== Writing movies to db/movies.json completed");
   });
 
-  console.log("== Writing movies to file db/people.json");
+  console.log("== Writing people to file db/people.json");
   fs.writeFile("db/people.json", JSON.stringify(people), function (err) {
     if (err) throw err;
-    console.log("== Writing movies to db/people.json completed");
+    console.log("== Writing people to db/people.json completed");
+  });
+
+  console.log("== Writing users to file db/users.json");
+  fs.writeFile("db/users.json", JSON.stringify(users), function (err) {
+    if (err) throw err;
+    console.log("== Writing users to db/users.json completed");
   });
 
   console.log("============================");
