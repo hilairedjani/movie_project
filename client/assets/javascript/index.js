@@ -69,7 +69,10 @@ const login = async (email, password) => {
       data: { email, password },
     });
 
-    return alert("Logged in successfully");
+    alert("Logged in successfully");
+
+    // Go to movies page
+    window.location.replace("/api/movies");
   } catch (error) {
     console.log(error.responseText);
     return alert(error.responseJSON.message);

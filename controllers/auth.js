@@ -10,8 +10,6 @@ exports.login = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    console.log(email);
-
     if (!email || email.length <= 0)
       return res.status(400).json({ message: "Email is required" });
 

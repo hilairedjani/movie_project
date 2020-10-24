@@ -3,6 +3,7 @@ head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   title Popular Movies
+  link(href='../assets/stylesheets/index.css' type='text/css' rel='stylesheet')
   // Bootstrap stylesheets CDN
   link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' integrity='sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z' crossorigin='anonymous')
   // Font Awesome CSS DN
@@ -14,8 +15,7 @@ head
   // Bootstrap javascript CDN
   script(defer='' src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV' crossorigin='anonymous')
   script(defer='' src='../assets/javascript/index.js')
-.btn-group(role='group' aria-label='Basic example')
-  button.btn.btn-secondary(type='button') Back
+
 .row
   .col-md-8.offset-md-2
     .row
@@ -27,22 +27,10 @@ head
     h2 Trending Movies
     p
     .container-fluid
-      .row
-        .col-4
-          .card(style='width: 18rem;')
-            img.card-img-top(src='https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_SX300.jpg')
+      .card-columns
+        for movie of movies
+          .card
+            img.card-img-top(src=movie.image)
             .card-body
-              h5.card-title Toy Story
-              a.btn.btn-primary(href='#') Go to Movie
-        .col-4
-          .card(style='width: 18rem;')
-            img.card-img-top(src='https://m.media-amazon.com/images/M/MV5BZTk2ZmUwYmEtNTcwZS00YmMyLWFkYjMtNTRmZDA3YWExMjc2XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg')
-            .card-body
-              h5.card-title Jumanji
-              a.btn.btn-primary(href='#') Go to Movie
-        .col-4
-          .card(style='width: 18rem;')
-            img.card-img-top(src='https://m.media-amazon.com/images/M/MV5BMjQxM2YyNjMtZjUxYy00OGYyLTg0MmQtNGE2YzNjYmUyZTY1XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg')
-            .card-body
-              h5.card-title Grumpier Old Men
-              a.btn.btn-primary(href='#') Go to Movie
+              h5.card-title !{movie.title}
+              a.btn.btn-primary(href=`/api/movies/${movie.id}`) Go to Movie

@@ -37,7 +37,8 @@ app.use("/api/people", require("./routes/api/people"));
 app.use("/api/users", require("./routes/api/users"));
 
 app.get("/", (req, res) => {
-  res.render("index");
+  const movies = require("./db/movies.json");
+  res.render("index", { movies: movies });
 });
 
 // Start server
