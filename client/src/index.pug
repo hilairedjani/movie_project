@@ -1,1 +1,104 @@
-heyehjdbdbd
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Movies 55
+  link(href='../assets/stylesheets/index.css' type='text/css' rel='stylesheet')
+  // Bootstrap stylesheets CDN
+  link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' integrity='sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z' crossorigin='anonymous')
+  // Font Awesome CSS DN
+  link(href='https://use.fontawesome.com/releases/v5.12.1/css/all.css' rel='stylesheet')
+  // JQuery CDN
+  script(src='https://code.jquery.com/jquery-3.5.1.min.js' integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin='anonymous')
+  // Popper CDN
+  script(defer='' src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js' integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN' crossorigin='anonymous')
+  // Bootstrap javascript CDN
+  script(defer='' src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV' crossorigin='anonymous')
+  script(src='../assets/javascript/movies.js')
+  script(src='../assets/javascript/index.js')
+  
+.container-fluid
+  .row
+    .col-md-8.offset-md-2
+      .row
+        .col-12
+          .row
+            .col-8
+              h1
+                i.fas.fa-film
+                | &nbsp;Movies 55
+            .col.mr-auto.mt-auto
+              a.font-weight-bold(href='#' data-toggle='modal' data-target='#register-modal') REGISTER
+              |  | 
+              a.font-weight-bold(href='#' data-toggle='modal' data-target='#login-modal') LOGIN
+          hr.text-muted
+      .row
+        .col-md-10.offset-md-1
+          form.form-inline.my-2.my-lg-0.p-0.w-100
+            .row.w-100
+              .col
+                input.form-control.mr-sm-2.bg-dark.w-100(type='search' placeholder='Find a movie...' aria-label='Search')
+              .col-2
+                button.btn.btn-warning.my-2.my-sm-0.font-weight-bold.btn-block(type='submit') Search
+      .row
+        .col-md-10.offset-md-1.py-5
+          #top-movies.carousel.slide(data-ride='carousel')
+            ol#top-movies-carousel-indicators.carousel-indicators
+                li.active(data-target="#top-movies" data-slide-to="0")
+                each movie, index in movies.slice(1, movies.length)
+                    li(data-target="#top-movies" data-slide-to=index+1)
+            #top-movies-carousel-inner.carousel-inner
+                .carousel-item.movie-list-item.active
+                        a(href=`/api/movies/${movies[0].id}`)
+                            img.d-block.w-100(src=movies[0].image  alt='...')
+                            .carousel-caption.d-none.d-md-block.bg-dark
+                                h5 !{movies[0].title}
+                                p !{movies[0].plot}
+                for movie of movies.slice(1, movies.length)
+                    .carousel-item.movie-list-item
+                        a(href=`/api/movies/${movie.id}`)
+                            img.d-block.w-100(src=movie.image  alt='...')
+                            .carousel-caption.d-none.d-md-block.bg-dark
+                                h5 !{movie.title}
+                                p !{movie.plot}
+            a.carousel-control-prev(href='#top-movies' role='button' data-slide='prev')
+              span.carousel-control-prev-icon(aria-hidden='true')
+              span.sr-only Previous
+            a.carousel-control-next(href='#top-movies' role='button' data-slide='next')
+              span.carousel-control-next-icon(aria-hidden='true')
+              span.sr-only Next
+  #login-modal.modal.fade(tabindex='-1' aria-hidden='true')
+    .modal-dialog
+      .modal-content.bg-dark
+        .modal-header
+          h5.modal-title Login
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form#login-form
+            .form-group
+              label(for='user-email') Email
+              input#user-email.form-control(type='email' required='true')
+            .form-group
+              label(for='user-password') Password
+              input#user-password.form-control(type='password' required='true')
+            button.btn.btn-primary(type='submit') Submit
+  #register-modal.modal.fade(tabindex='-1' aria-hidden='true')
+    .modal-dialog
+      .modal-content.bg-dark
+        .modal-header
+          h5.modal-title Register
+          button.close(type='button' data-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') &times;
+        .modal-body
+          form
+            .form-group
+              label(for='user-email') Email
+              input#user-email.form-control(type='email')
+            .form-group
+              label(for='user-password') Password
+              input#user-password.form-control(type='password')
+            .form-group
+              label(for='user-confirm-password') Confirm password
+              input#user-confirm-password.form-control(type='password')
+            button.btn.btn-primary(type='submit') Submit

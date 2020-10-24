@@ -3,6 +3,7 @@ head
   meta(charset='UTF-8')
   meta(name='viewport' content='width=device-width, initial-scale=1.0')
   title Movie
+  link(href='/assets/stylesheets/index.css' type='text/css' rel='stylesheet')
   // Bootstrap stylesheets CDN
   link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' integrity='sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z' crossorigin='anonymous')
   // Font Awesome CSS DN
@@ -13,8 +14,11 @@ head
   script(defer='' src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js' integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN' crossorigin='anonymous')
   // Bootstrap javascript CDN
   script(defer='' src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV' crossorigin='anonymous')
-  script(defer='' src='../assets/javascript/index.js')
+  script(defer='' src='/assets/javascript/index.js')
 .container-fluid
+  .row
+    .col.p-3
+      a.btn.btn-secondary(href=`/api/movies`) Back
   .row
     .col-md-8.offset-md-2
       .row
@@ -24,35 +28,37 @@ head
             | &nbsp;Movies 55
           hr.text-muted
       h4
-        | Toy Story
+        | !{movie.title}
       .row
-        .col-8
-          img.d-block.w-100(src='https://m.media-amazon.com/images/M/MV5BMDU2ZWJlMjktMTRhMy00ZTA5LWEzNDgtYmNmZTEwZTViZWJkXkEyXkFqcGdeQXVyNDQ2OTk4MzI@._V1_SX300.jpg' height='750' alt='...')
-        .col-4
+        .col-3
+          img.d-block.w-100(src=movie.image  alt='...')
+        .col-3.text-white
           h6.font-weight-bold Released
-          p 22 Nov 1995
+          p !{movie.releaseYear}
           h6.font-weight-bold Rated
-          p G
+          p !{movie.rating}
           h6.font-weight-bold Runtime
-          p 81 mins
+          p !{movie.runtime}
           h6.font-weight-bold Genre
-          p Animation, Adventure, Comedy, Family, Fantasy
+          p !{movie.genre}
           h6.font-weight-bold Plot
-          p
-            | A cowboy doll is profoundly threatened and jealous when a new spaceman figure supplants him
-            | as top toy in a boy&apos;s room.y
+          p !{movie.plot}
+      hr
       .row
-        .col-12
+        .col-12.text-white
           h6.font-weight-bold Cast
-          p Tom Hanks, Tim Allen, Don Rickles, Jim Varney
+          p 
+            for actor of movie.actors
+              span !{actor.firstname} !{actor.lastname}, 
       .row
-        .col-12
-          h6.font-weight-bold Director
-          p John Lasseter
+        .col-12.text-white
+          h6.font-weight-bold Director(s)
+          p 
+            for director of movie.directors
+              span !{director.firstname} !{director.lastname}, 
       .row
-        .col-12
+        .col-12.text-white
           h6.font-weight-bold Writers
-          p
-            | John Lasseter (original story by), Pete Docter (original story by), Andrew Stanton (original
-            | story by), Joe Ranft (original story by), Joss Whedon (screenplay by), Andrew Stanton
-            | (screenplay by), Joel Cohen (screenplay by), Alec Sokolow (screenplay by)
+          p 
+            for writer of movie.writers
+              span !{writer.firstname} !{writer.lastname}, 

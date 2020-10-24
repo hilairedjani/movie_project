@@ -6,77 +6,6 @@ const Person = require("../models/person");
 
 let lastMovieId = movies.length;
 
-const findById = async (id) => {
-  try {
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].id == id) return movies[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    return null;
-  }
-};
-
-const findByTitle = async (title) => {
-  try {
-    let re = new RegExp(title, "i");
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].title.match(re)) return movies[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    return null;
-  }
-};
-
-const findAllByTitle = async (title) => {
-  try {
-    const moviesArr = [];
-    let re = new RegExp(title, "i");
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].title.match(re)) moviesArr.push(movies[i]);
-    }
-
-    return moviesArr;
-  } catch (error) {
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-const findAllByGenre = async (genre) => {
-  try {
-    const moviesArr = [];
-    let re = new RegExp(genre, "i");
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].genre.match(re)) moviesArr.push(movies[i]);
-    }
-
-    return moviesArr;
-  } catch (error) {
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-const findAllByYear = async (releaseYear) => {
-  try {
-    const moviesArr = [];
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].releaseYear == releaseYear) moviesArr.push(movies[i]);
-    }
-
-    return moviesArr;
-  } catch (error) {
-    console.log("An error occured...");
-    return [];
-  }
-};
-
 /**
  * @description Fetch all movies::First 10 movies by default
  */
@@ -98,7 +27,9 @@ exports.getMovies = async (req, res) => {
       moviesArr = await Movie.findAll({ skip, limit });
     }
 
-    return res.json(moviesArr);
+    // Rendering files for now
+    // return res.json(moviesArr);
+    return res.render("popularmovies", { movies: moviesArr });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -119,7 +50,32 @@ exports.getMovieById = async (req, res) => {
       return res.status(404).json({ message: "No movie found" });
     }
 
-    return res.json(movie);
+    // Fetch actors, directors and writers
+    let actorIds = movie.actors,
+      directorIds = movie.directors,
+      writerIds = movie.writers;
+
+    movie.actors = [];
+    for (let i = 0; i < actorIds.length; i++) {
+      const actor = await Person.findById(actorIds[i]);
+      movie.actors.push(actor);
+    }
+
+    movie.directors = [];
+    for (let i = 0; i < directorIds.length; i++) {
+      const director = await Person.findById(directorIds[i]);
+      movie.directors.push(director);
+    }
+
+    movie.writers = [];
+    for (let i = 0; i < writerIds.length; i++) {
+      const writer = await Person.findById(writerIds[i]);
+      movie.writers.push(writer);
+    }
+
+    // Render pug for now
+    // return res.json(movie);
+    return res.render("movie", { movie: movie });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -183,7 +139,7 @@ exports.updateMovie = async (req, res) => {
     const movieId = req.params.id;
 
     // Fetch movie from DB
-    const movie = await findById(movieId);
+    const movie = await Movie.findById(movieId);
 
     if (!movie) return res.status(404).json({ error: "Movie not found" });
 
@@ -308,7 +264,7 @@ exports.deleteMovie = async (req, res) => {
     const movieId = req.params.id;
 
     // Find and delete movie
-    const movie = await findById(movieId);
+    const movie = await Movie.findById(movieId);
     if (!movie) return res.status(404).json({ error: "Movie not found" });
 
     movies = movies.filter((m) => m.id != movieId);

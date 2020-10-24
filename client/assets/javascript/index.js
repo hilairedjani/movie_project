@@ -44,3 +44,44 @@ function displayTopMovies(movies) {
 }
 
 function displayMovie(index) {}
+
+const handleLogin = async () => {
+  const email = $("input#user-email").val();
+  const password = $("input#user-password").val();
+
+  if (email.length <= 0) {
+    return alert("Please enter an email");
+  }
+
+  if (password.length <= 0) {
+    return alert("Please enter a password");
+  }
+
+  await login(email, password);
+};
+
+const login = async (email, password) => {
+  try {
+    // const response = await $.post("/api/auth/login", { email, password });
+    const response = await $.ajax({
+      url: "/api/auth/login",
+      type: "POST",
+      data: { email, password },
+    });
+
+    alert("Logged in successfully");
+
+    // Go to movies page
+    window.location.replace("/api/movies");
+  } catch (error) {
+    console.log(error.responseText);
+    return alert(error.responseJSON.message);
+  }
+};
+
+$(document).ready(function () {
+  $("form#login-form").on("submit", function (event) {
+    event.preventDefault();
+    handleLogin();
+  });
+});

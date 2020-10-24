@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "client/src"));
 
+// Serve static files
+app.use(express.static("client"));
+
 // Apply app middleware
 app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: false }));
@@ -28,12 +31,14 @@ app.use((req, res, next) => {
 });
 
 // Add routes
+app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/movies", require("./routes/api/movies"));
 app.use("/api/people", require("./routes/api/people"));
 app.use("/api/users", require("./routes/api/users"));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname + "index"));
+  const movies = require("./db/movies.json");
+  res.render("index", { movies: movies });
 });
 
 // Start server
