@@ -110,4 +110,19 @@ User.findById = async (id) => {
   }
 };
 
+// Find a user by email
+User.findByEmail = async (email) => {
+  try {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].email === email) return users[i];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return null;
+  }
+};
+
 module.exports = User;

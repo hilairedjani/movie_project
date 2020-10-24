@@ -1,3 +1,7 @@
+body {
+  background-color: #343a40 !important;
+}
+
 .movie-list-item {
   cursor: pointer;
 }
