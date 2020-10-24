@@ -68,10 +68,14 @@ exports.getMovieById = async (req, res) => {
 
       if (writerIds.includes(people[i].id)) movie.writers.push(people[i]);
     }
+    const relatedMovies = await Movie.findAllByGenre(
+      movie.genre.split(", ")[0],
+      { skip: 0, limit: 2, exlude: [movie.id] }
+    );
 
     // Render pug for now
     // return res.json(movie);
-    return res.render("movie", { movie: movie });
+    return res.render("movie", { movie: movie, relatedMovies });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

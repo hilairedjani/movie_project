@@ -28,38 +28,49 @@ head
               i.fas.fa-film
               | &nbsp;Movies 55
           hr.text-muted
-      h4
-        | !{movie.title}
       .row
-        .col-3
-          img.d-block.w-100(src=movie.image  alt='...')
-        .col-3.text-white
-          h6.font-weight-bold Released
-          p !{movie.releaseYear}
-          h6.font-weight-bold Rated
-          p !{movie.rating}
-          h6.font-weight-bold Runtime
-          p !{movie.runtime}
-          h6.font-weight-bold Genre
-          p !{movie.genre}
-          h6.font-weight-bold Plot
-          p !{movie.plot}
-      hr
-      .row
-        .col-12.text-white
-          h6.font-weight-bold Cast
-          p 
-            for actor of movie.actors
-              span !{actor.firstname} !{actor.lastname}, 
-      .row
-        .col-12.text-white
-          h6.font-weight-bold Director(s)
-          p 
-            for director of movie.directors
-              span !{director.firstname} !{director.lastname}, 
-      .row
-        .col-12.text-white
-          h6.font-weight-bold Writers
-          p 
-            for writer of movie.writers
-              span !{writer.firstname} !{writer.lastname}, 
+        .col-6
+          h3 !{movie.title}
+          .row
+            .col-4
+              img.d-block.w-100(src=movie.image  alt='...')
+            .col-8.text-white
+              h6.font-weight-bold Released
+              p !{movie.releaseYear}
+              h6.font-weight-bold Rated
+              p !{movie.rating}
+              h6.font-weight-bold Runtime
+              p !{movie.runtime}
+              h6.font-weight-bold Genre
+              p !{movie.genre}
+              h6.font-weight-bold Plot
+              p !{movie.plot}
+          hr
+          .row
+            .col-12.text-white
+              h6.font-weight-bold Cast
+              p 
+                for actor of movie.actors
+                  span !{actor.firstname} !{actor.lastname}, 
+          .row
+            .col-12.text-white
+              h6.font-weight-bold Director(s)
+              p 
+                for director of movie.directors
+                  span !{director.firstname} !{director.lastname}, 
+          .row
+            .col-12.text-white
+              h6.font-weight-bold Writers
+              p 
+                for writer of movie.writers
+                  span !{writer.firstname} !{writer.lastname}, 
+
+        .col-6
+          h5 More like !{movie.title} 
+          .row
+            for relatedMovie of relatedMovies
+              .card.m-1
+                img.card-img-top(src=relatedMovie.image)
+                .card-body
+                  h5.card-title !{relatedMovie.title}
+                  a.btn.btn-primary(href=`/api/movies/${relatedMovie.id}`) Go to Movie 

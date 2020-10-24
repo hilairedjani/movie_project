@@ -56,7 +56,7 @@ Movie.findAllByTitle = async (title, { skip = 0, limit = 10 }) => {
 };
 
 // Find movies based on genre
-Movie.findAllByGenre = async (genre, { skip = 0, limit = 10 }) => {
+Movie.findAllByGenre = async (genre, { skip = 0, limit = 10, exlude = [] }) => {
   try {
     let moviesArr = [];
     let re = new RegExp(genre, "i");
@@ -65,7 +65,11 @@ Movie.findAllByGenre = async (genre, { skip = 0, limit = 10 }) => {
     let skipCount = 0;
 
     for (let i = 0; i < movies.length; i++) {
-      if (movies[i].genre && movies[i].genre.match(re)) {
+      if (
+        movies[i].genre &&
+        movies[i].genre.match(re) &&
+        !exlude.includes(movies[i].id)
+      ) {
         if (skipCount++ < skip) {
           continue;
         }
