@@ -1,8 +1,10 @@
 // == MOVIES CONTROLLER
 
-let movies = require("../db/movies.json");
 const Movie = require("../models/movie");
 const Person = require("../models/person");
+
+const people = require("../db/people.json");
+let movies = require("../db/movies.json");
 
 let lastMovieId = movies.length;
 
@@ -56,21 +58,15 @@ exports.getMovieById = async (req, res) => {
       writerIds = movie.writers;
 
     movie.actors = [];
-    for (let i = 0; i < actorIds.length; i++) {
-      const actor = await Person.findById(actorIds[i]);
-      movie.actors.push(actor);
-    }
-
     movie.directors = [];
-    for (let i = 0; i < directorIds.length; i++) {
-      const director = await Person.findById(directorIds[i]);
-      movie.directors.push(director);
-    }
-
     movie.writers = [];
-    for (let i = 0; i < writerIds.length; i++) {
-      const writer = await Person.findById(writerIds[i]);
-      movie.writers.push(writer);
+
+    for (let i = 0; i < people.length; i++) {
+      if (actorIds.includes(people[i].id)) movie.actors.push(people[i]);
+
+      if (directorIds.includes(people[i].id)) movie.directors.push(people[i]);
+
+      if (writerIds.includes(people[i].id)) movie.writers.push(people[i]);
     }
 
     // Render pug for now

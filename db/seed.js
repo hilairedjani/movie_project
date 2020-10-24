@@ -166,6 +166,7 @@ const { movies, people, users } = require("./index");
 
   // Adding users
   const user1 = {
+    id: 1,
     firstname: "User",
     lastname: "One",
     email: "user1@test.com",
@@ -178,6 +179,7 @@ const { movies, people, users } = require("./index");
   users.push(user1);
 
   const user2 = {
+    id: 2,
     firstname: "User",
     lastname: "Two",
     email: "user2@test.com",
@@ -190,6 +192,7 @@ const { movies, people, users } = require("./index");
   users.push(user2);
 
   const user3 = {
+    id: 3,
     firstname: "John",
     lastname: "Doe",
     email: "johndoe@test.com",

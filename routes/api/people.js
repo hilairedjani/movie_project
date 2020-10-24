@@ -3,7 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 // Controller actions
-const { getPeople, getPerson } = require("../../controllers/people");
+const {
+  getPeople,
+  getPerson,
+  createPerson,
+} = require("../../controllers/people");
 
 // == GET ROUTES
 
@@ -26,10 +30,10 @@ router.get("/:id", getPerson);
 
 /**
  * @route POST api/people
- * @description Create/add a movie
+ * @description Create/add a person
  * @access Public
  */
-// router.post("/", createMovie);
+router.post("/", createPerson);
 
 // == PUT/PATCH ROUTES
 

@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // Controller actions
-const { login } = require("../../controllers/auth");
+const { login, register } = require("../../controllers/auth");
 
 // == GET ROUTES
 
@@ -16,22 +16,15 @@ const { login } = require("../../controllers/auth");
  */
 router.post("/login", login);
 
+/**
+ * @route POST api/auth/register
+ * @description Register a given user
+ * @access Public
+ */
+router.post("/register", register);
+
 // == PUT/PATCH ROUTES
 
-/**
- * @route PATCH api/users/:id
- * @description Update a given movie
- * @access Public
- */
-// router.patch("/:id", updateMovie);
-
 // == DELETE ROUTES
-
-/**
- * @route DELETE api/users/:id
- * @description Delete a given movie
- * @access Public
- */
-// router.delete("/:id", deleteMovie);
 
 module.exports = router;

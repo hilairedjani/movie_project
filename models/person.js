@@ -1,4 +1,4 @@
-// == PEOPLE MODEL
+// == PERSON MODEL
 
 /**
  * == PERSON SCHEMA
@@ -99,6 +99,25 @@ Person.findById = async (id) => {
     }
 
     return null;
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return null;
+  }
+};
+
+Person.createPerson = async (params) => {
+  try {
+    let newId = people[people.length - 1].id;
+
+    people.push({
+      id: newId ? ++newId : 1,
+      firstname: params.firstname,
+      lastname: params.lastname,
+      rank: params.rank,
+    });
+
+    return people[people.length - 1];
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

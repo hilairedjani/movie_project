@@ -125,4 +125,55 @@ User.findByEmail = async (email) => {
   }
 };
 
+// Find a user by username
+User.findByUsername = async (username) => {
+  try {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].username === username) return users[i];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return null;
+  }
+};
+
+// Find a user by username or email
+User.findByUsernameOrEmail = async (ue) => {
+  try {
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].username === ue || users[i].email === ue) return users[i];
+    }
+
+    return null;
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return null;
+  }
+};
+
+User.createUser = async (params) => {
+  try {
+    let newId = users[users.length - 1].id;
+    users.push({
+      id: newId ? ++newId : 1,
+      firstname: params.firstname,
+      lastname: params.lastname,
+      email: params.email,
+      username: params.username,
+      password: params.password,
+      role: params.role,
+    });
+
+    return users[users.length - 1];
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return null;
+  }
+};
+
 module.exports = User;

@@ -25,8 +25,9 @@ head
           .row
             .col-8
               h1
-                i.fas.fa-film
-                | &nbsp;Movies 55
+                a(href="/")
+                  i.fas.fa-film
+                  | &nbsp;Movies 55
             .col.mr-auto.mt-auto
               a.font-weight-bold(href='#' data-toggle='modal' data-target='#register-modal') REGISTER
               |  | 
@@ -77,11 +78,11 @@ head
         .modal-body
           form#login-form
             .form-group
-              label(for='user-email') Email
-              input#user-email.form-control(type='email' required='true')
+              label(for='login-user-username-email') Username or email
+              input#login-user-username-email.form-control(type='text' required='true')
             .form-group
-              label(for='user-password') Password
-              input#user-password.form-control(type='password' required='true')
+              label(for='login-user-password') Password
+              input#login-user-password.form-control(type='password' required='true')
             button.btn.btn-primary(type='submit') Submit
   #register-modal.modal.fade(tabindex='-1' aria-hidden='true')
     .modal-dialog
@@ -91,14 +92,28 @@ head
           button.close(type='button' data-dismiss='modal' aria-label='Close')
             span(aria-hidden='true') &times;
         .modal-body
-          form
+          form#register-form
             .form-group
-              label(for='user-email') Email
-              input#user-email.form-control(type='email')
+              label(for='register-user-firstname') Firstname
+              input#register-user-firstname.form-control(type='text')
             .form-group
-              label(for='user-password') Password
-              input#user-password.form-control(type='password')
+              label(for='register-user-lastname') Lastname
+              input#register-user-lastname.form-control(type='text')
             .form-group
-              label(for='user-confirm-password') Confirm password
-              input#user-confirm-password.form-control(type='password')
+              label(for='register-user-email') Email
+              input#register-user-email.form-control(type='email' required='true')
+            .form-group
+              label(for='register-user-username') Username
+              input#register-user-username.form-control(type='text' required='true')
+            .form-group
+              label(for='register-user-password') Password
+              input#register-user-password.form-control(type='password' required='true')
+            .form-group
+              label(for='register-user-confirm-password') Confirm Password
+              input#register-user-confirm-password.form-control(type='password' required='true')
+            .form-group
+              label(for='register-user-role') User Role
+              select#register-user-role.custom-select
+                 option(value='user' selected='true') User
+                 option(value='contributor') Contributor
             button.btn.btn-primary(type='submit') Submit

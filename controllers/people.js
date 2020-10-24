@@ -1,6 +1,7 @@
 // == PEOPLE CONTROLLER
 
 const Person = require("../models/person");
+const people = require("../db/people.json");
 
 /**
  * @description Fetch all people::First 10 people by default
@@ -74,6 +75,43 @@ exports.getPerson = async (req, res) => {
     if (!person) {
       return res.status(404).json({ message: "Person not found" });
     }
+
+    return res.json(person);
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
+
+/**
+ * @description Add a person
+ */
+exports.createPerson = async (req, res) => {
+  try {
+    const firstname = req.body.firstname;
+    const lastname = req.body.lastname;
+    const rank = req.body.rank;
+
+    if (!firstname || firstname.length <= 0)
+      return res.status(400).json({ message: "Firstname is required" });
+
+    if (!lastname || lastname.length <= 0)
+      return res.status(400).json({ message: "Lastname is required" });
+
+    if (!rank || rank.length <= 0)
+      return res.status(400).json({ message: "Rank is required" });
+
+    for (let i = 0; i < people.length; i++) {
+      if (
+        people[i].firstname === firstname &&
+        people[i].lastname === lastname &&
+        people[i].rank === rank.toLowerCase()
+      )
+        return res.status(400).json({ message: "Person already exists" });
+    }
+
+    const person = await Person.createPerson({ firstname, lastname, rank });
 
     return res.json(person);
   } catch (error) {

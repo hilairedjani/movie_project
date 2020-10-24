@@ -1,72 +1,9 @@
-function init() {
-  fetchTopMovies();
-}
-
-function fetchTopMovies() {
-  let topMovies = movies;
-  displayTopMovies(topMovies);
-
-  let request = new XMLHttpRequest();
-
-  //   request.onreadystatechange = function () {
-  //     if (this.readyState == 4 && this.status == 200) {
-  //       topMovies = JSON.parse(this.responseText);
-  //       displayTopMovies(topMovies);
-  //     }
-  //   };
-
-  //   request.open("GET", "/top-movies");
-  //   request.send();
-}
-
-function displayTopMovies(movies) {
-  const moviesContainer = $("#top-movies");
-  const moviesIndicators = $("#top-movies-carousel-indicators");
-  const moviesCarouselInner = $("#top-movies-carousel-inner");
-
-  for (let i = 0; i < movies.length; i++) {
-    moviesIndicators.append(
-      `<li data-target="#top-movies" data-slide-to="${i}"></li>`
-    );
-
-    moviesCarouselInner.append(
-      `<div class="carousel-item movie-list-item ${i == 0 ? "active" : ""}" >
-        <img src="${
-          movies[i].Poster
-        }" class="d-block w-100" height="750 alt="...">
-        <div class="carousel-caption d-none d-md-block bg-dark">
-            <h5>${movies[i].Title}</h5>
-            <p>${movies[i].Plot}</p>
-        </div>
-    </div>`
-    );
-  }
-}
-
-function displayMovie(index) {}
-
-const handleLogin = async () => {
-  const email = $("input#user-email").val();
-  const password = $("input#user-password").val();
-
-  if (email.length <= 0) {
-    return alert("Please enter an email");
-  }
-
-  if (password.length <= 0) {
-    return alert("Please enter a password");
-  }
-
-  await login(email, password);
-};
-
-const login = async (email, password) => {
+const login = async (username, password) => {
   try {
-    // const response = await $.post("/api/auth/login", { email, password });
     const response = await $.ajax({
       url: "/api/auth/login",
       type: "POST",
-      data: { email, password },
+      data: { username, password },
     });
 
     alert("Logged in successfully");
@@ -79,9 +16,84 @@ const login = async (email, password) => {
   }
 };
 
+const handleLogin = async () => {
+  const username = $("input#login-user-username-email").val();
+  const password = $("input#login-user-password").val();
+
+  if (username.length <= 0) {
+    return alert("Please enter a username");
+  }
+
+  if (password.length <= 0) {
+    return alert("Please enter a password");
+  }
+
+  await login(username, password);
+};
+
+const register = async (registerParams) => {
+  try {
+    const response = await $.ajax({
+      url: "/api/auth/register",
+      type: "POST",
+      data: registerParams,
+    });
+
+    alert("Registered successfully");
+
+    // Go to movies page
+    window.location.replace("/api/movies");
+  } catch (error) {
+    console.log(error.responseText);
+    return alert(error.responseJSON.message);
+  }
+};
+
+const handleRegister = async () => {
+  const firstname = $("input#register-user-firstname").val();
+  const lastname = $("input#register-user-lastname").val();
+  const email = $("input#register-user-email").val();
+  const username = $("input#register-user-username").val();
+  const password = $("input#register-user-password").val();
+  const confirmPassword = $("input#register-user-confirm-password").val();
+  const role = $("select#register-user-role").val();
+
+  if (email.length <= 0) {
+    return alert("Please enter an email");
+  }
+
+  if (username.length <= 0) {
+    return alert("Please enter an username");
+  }
+
+  if (password.length <= 0) {
+    return alert("Please enter a password");
+  }
+
+  if (confirmPassword.length <= 0) {
+    return alert("Please confirm your password");
+  }
+
+  if (role.length <= 0) {
+    return alert("Please choose a role");
+  }
+
+  if (password !== confirmPassword) {
+    return alert("Passwords do not match");
+  }
+
+  console.log("Registering");
+  await register({ firstname, lastname, email, username, password, role });
+};
+
 $(document).ready(function () {
   $("form#login-form").on("submit", function (event) {
     event.preventDefault();
     handleLogin();
+  });
+
+  $("form#register-form").on("submit", function (event) {
+    event.preventDefault();
+    handleRegister();
   });
 });
