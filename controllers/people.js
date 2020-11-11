@@ -1,6 +1,6 @@
 // == PEOPLE CONTROLLER
 
-const Person = require("../models/person");
+const Person = require("../models/person").default;
 const people = require("../db/people.json");
 
 /**

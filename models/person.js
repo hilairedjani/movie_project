@@ -7,122 +7,75 @@
  * rank
  */
 
-let people = require("../db/people.json");
+import { Schema, model } from "mongoose";
 
-const Person = {};
+const personSchema = new Schema({
+  rank: {
+    type: String,
+    enum: ["director", "actor", "writer"],
+    required: true,
+  },
+  firstname: {
+    type: String,
+    required: true,
+  },
+  lastname: {
+    type: String,
+  },
+});
 
-Person.findAll = async ({ limit = 10, skip = 0 }) => {
-  try {
-    let peopleArr = [];
-    peopleArr = people.slice(skip, limit + skip);
+// Static methods
+personSchema.statics = {
+  // Find all people
+  findAll: async function ({ limit = 10, skip = 0 }) {
+    return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
+  },
 
-    return peopleArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
+  // Find people based on name
+  // Match with firstname and lastname
+  findAllByName: async function (name, { skip = 0, limit = 10 }) {
+    const nameRegex = new RegExp("^" + name);
 
-// Find actors based on name
-// Match with firstname and lastname
-Person.findAllByName = async (name, { skip = 0, limit = 10 }) => {
-  try {
-    let peopleArr = [];
-    let re = new RegExp(name, "i");
+    return await this.find({
+      $or: [
+        {
+          firstname: {
+            $regex: nameRegex,
+            $options: "i",
+          },
+        },
+        { lastname: { $regex: nameRegex, $options: "i" } },
+      ],
+    })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-    let peopleCount = 0;
-    let skipCount = 0;
+  // Find people based on rank::director, actor, writer
+  findAllByRank: async function (rank, { limit = 10, skip = 0 }) {
+    return await this.find({
+      rank: rank.toLowerCase(),
+    })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-    for (let i = 0; i < people.length; i++) {
-      if (
-        (people[i].firstname && people[i].firstname.match(re)) ||
-        (people[i].lastname && people[i].lastname.match(re))
-      ) {
-        if (skipCount++ < skip) {
-          continue;
-        }
+  // Find a person by id
+  findById: async function (id) {
+    return await this.findById(id);
+  },
 
-        if (peopleCount < limit) {
-          peopleArr.push(people[i]);
-          peopleCount++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    return peopleArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-// Find actors based on rank::director, actor, writer
-Person.findAllByRank = async (rank, { limit = 10, skip = 0 }) => {
-  try {
-    let peopleArr = [];
-
-    let peopleCount = 0;
-    let skipCount = 0;
-
-    for (let i = 0; i < people.length; i++) {
-      if (people[i].rank.toLowerCase() === rank.toLowerCase()) {
-        if (skipCount++ < skip) {
-          continue;
-        }
-
-        if (peopleCount < limit) {
-          peopleArr.push(people[i]);
-          peopleCount++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    return peopleArr;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return [];
-  }
-};
-
-// Find a person by id
-Person.findById = async (id) => {
-  try {
-    for (let i = 0; i < people.length; i++) {
-      if (people[i].id == id) return people[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-Person.createPerson = async (params) => {
-  try {
-    let newId = people[people.length - 1].id;
-
-    people.push({
-      id: newId ? ++newId : 1,
-      firstname: params.firstname,
-      lastname: params.lastname,
-      rank: params.rank,
+  createPerson: async function ({ firstname, lastname, rank }) {
+    const person = await new this({
+      firstname,
+      lastname,
+      rank,
     });
 
-    return people[people.length - 1];
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
+    await person.save();
+
+    return person;
+  },
 };
 
-module.exports = Person;
+export default model("Person", personSchema);

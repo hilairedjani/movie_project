@@ -6,192 +6,88 @@
  * releaseYear
  */
 
-let movies = require("../db/movies.json");
+import { Schema, model } from "mongoose";
 
-const Movie = {};
+const movieSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  releaseYear: {
+    type: String,
+    required: true,
+  },
+  genre: [String],
+  runtime: {
+    type: String,
+  },
+  plot: {
+    type: String,
+  },
+  rating: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  image: {
+    type: String,
+  },
+  actors: [Number],
+  directors: [Number],
+  writers: [Number],
+});
 
-Movie.findAll = async ({ limit = 10, skip = 0 }) => {
-  try {
-    let moviesArr = [];
-    moviesArr = movies.slice(skip, limit + skip);
-
-    return moviesArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
+// Instance methods
+movieSchema.methods = {
+  // Add an actor to a movie
+  addActor: async function (actorId) {
+    await this.actors.push(actorId);
+    return;
+  },
+  // Add a director to a movie
+  addDirector: async function (directorId) {
+    await this.directors.push(directorId);
+    return;
+  },
+  // Add a writer to a movie
+  addWriter: async function (writerId) {
+    await this.writers.push(writerId);
+    return;
+  },
 };
 
-// Find movies based on title
-Movie.findAllByTitle = async (title, { skip = 0, limit = 10 }) => {
-  try {
-    let moviesArr = [];
-    let re = new RegExp(title, "i");
+// Static methods
+movieSchema.statics = {
+  // Find all movies
+  findAll: async function ({ limit = 10, skip = 0 }) {
+    return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
+  },
 
-    let moviesCount = 0;
-    let skipCount = 0;
+  // Find movies based on genre
+  findAllByGenre: async function (
+    genre,
+    { skip = 0, limit = 10, exlude = [] }
+  ) {
+    // let re = new RegExp(genre, "i");
 
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].title && movies[i].title.match(re)) {
-        if (skipCount++ < skip) {
-          continue;
-        }
+    return await this.find({ genre: genre, _id: { $nin: exlude } })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-        if (moviesCount < limit) {
-          moviesArr.push(movies[i]);
-          moviesCount++;
-        } else {
-          break;
-        }
-      }
-    }
+  // Find movies based on release year
+  findAllByYear: async function (year, { skip = 0, limit = 10 }) {
+    return await this.find({ year: year })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-    return moviesArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
+  // Find a movie by id
+  findById: async function (id) {
+    return await this.findById(id);
+  },
 };
 
-// Find movies based on genre
-Movie.findAllByGenre = async (genre, { skip = 0, limit = 10, exlude = [] }) => {
-  try {
-    let moviesArr = [];
-    let re = new RegExp(genre, "i");
-
-    let moviesCount = 0;
-    let skipCount = 0;
-
-    for (let i = 0; i < movies.length; i++) {
-      if (
-        movies[i].genre &&
-        movies[i].genre.match(re) &&
-        !exlude.includes(movies[i].id)
-      ) {
-        if (skipCount++ < skip) {
-          continue;
-        }
-
-        if (moviesCount < limit) {
-          moviesArr.push(movies[i]);
-          moviesCount++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    return moviesArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-// Find movies based on release year
-Movie.findAllByYear = async (year, { skip = 0, limit = 10 }) => {
-  try {
-    let moviesArr = [];
-
-    let moviesCount = 0;
-    let skipCount = 0;
-
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].releaseYear == year) {
-        if (skipCount++ < skip) {
-          continue;
-        }
-
-        if (moviesCount < limit) {
-          moviesArr.push(movies[i]);
-          moviesCount++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    return moviesArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-// Find a movie by id
-Movie.findById = async (id) => {
-  try {
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].id == id) return movies[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-// Add an actor to a movie
-Movie.addActor = async (movieId, actorId) => {
-  try {
-    const movie = await Movie.findById(movieId);
-
-    if (movie.actors.includes(actorId)) {
-      return movie;
-    }
-
-    movie.actors.push(actorId);
-
-    return movie;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-// Add a director to a movie
-Movie.addDirector = async (movieId, directorId) => {
-  try {
-    const movie = await Movie.findById(movieId);
-
-    if (movie.directors.includes(directorId)) {
-      return movie;
-    }
-
-    movie.directors.push(directorId);
-
-    return movie;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-// Add a writer to a movie
-Movie.addWriter = async (movieId, writerId) => {
-  try {
-    const movie = await Movie.findById(movieId);
-
-    if (movie.writers.includes(writerId)) {
-      return movie;
-    }
-
-    movie.writers.push(writerId);
-
-    return movie;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
-
-module.exports = Movie;
+export default model("Movie", movieSchema);

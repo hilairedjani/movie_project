@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path");
 
+const { connectDatabase } = require("./db");
+
 // Create express server
 const app = express();
 
@@ -37,6 +39,9 @@ app.get("/", (req, res) => {
   const movies = require("./db/movies.json");
   res.render("index", { movies: movies });
 });
+
+// Connect database
+connectDatabase();
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

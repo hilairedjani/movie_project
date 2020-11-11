@@ -10,170 +10,135 @@
  * role
  */
 
-let users = require("../db/users.json");
+import { Schema, model } from "mongoose";
 
-const User = {};
-
-User.findAll = async ({ limit = 10, skip = 0 }) => {
-  try {
-    let usersArr = [];
-    usersArr = users.slice(skip, limit + skip);
-
-    return usersArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: [true, "Email already in use"],
+      trim: true,
+      validate: [validator.isEmail, "Email is invalid"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
+    },
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+      minlength: [2, "Username must be between 2 to 30 characters"],
+      maxlength: [30, "Username must be between 2 to 30 characters"],
+      validate: [
+        /^\w+$/,
+        "Username can only contain letters, numbers and/or underscore",
+      ],
+      unique: [true, "USername already in use"],
+      trim: true,
+    },
+    firstname: {
+      type: String,
+      trim: true,
+    },
+    lastname: {
+      type: String,
+      trim: true,
+    },
+  },
+  {
+    timestamps: true,
   }
-};
+);
 
-// Find users based on name
-// Match with firstname, lastname, and username
-User.findAllByName = async (name, { skip = 0, limit = 10 }) => {
-  try {
-    let usersArr = [];
-    let re = new RegExp(name, "i");
+// Static methods
+userSchema.statics = {
+  // Find all users
+  findAll: async function ({ limit = 10, skip = 0 }) {
+    return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
+  },
 
-    let usersCount = 0;
-    let skipCount = 0;
+  // Find users based on name
+  // Match with firstname, lastname, and username
+  findAllByName: async function (name, { skip = 0, limit = 10 }) {
+    let nameRegex = new RegExp("^" + name);
+    return await this.find({
+      $or: [
+        {
+          firstname: {
+            $regex: nameRegex,
+            $options: "i",
+          },
+        },
+        {
+          lastname: {
+            $regex: nameRegex,
+            $options: "i",
+          },
+        },
+        {
+          username: {
+            $regex: nameRegex,
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-    for (let i = 0; i < users.length; i++) {
-      if (
-        (users[i].firstname && users[i].firstname.match(re)) ||
-        (users[i].lastname && users[i].lastname.match(re)) ||
-        (users[i].username && users[i].username.match(re))
-      ) {
-        if (skipCount++ < skip) {
-          continue;
-        }
+  // Find users based on role::user, contributor
+  findAllByRole: async function (role, { limit = 10, skip = 0 }) {
+    return this.find({
+      role: role.toLowerCase(),
+    })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
 
-        if (usersCount < limit) {
-          usersArr.push(users[i]);
-          usersCount++;
-        } else {
-          break;
-        }
-      }
-    }
+  // Find a user by id
+  findById: async function (id) {
+    return await this.findById(id);
+  },
 
-    return usersArr;
-  } catch (error) {
-    console.log(error);
-    console.log("An error occured...");
-    return [];
-  }
-};
+  // Find a user by email
+  findByEmail: async function (email) {
+    return await this.findOne({ email });
+  },
 
-// Find actors based on role::user, contributor
-User.findAllRole = async (role, { limit = 10, skip = 0 }) => {
-  try {
-    let usersArr = [];
+  // Find a user by username
+  findByUsername: async function (username) {
+    return await this.findOne({ username });
+  },
 
-    let usersCount = 0;
-    let skipCount = 0;
+  // Find a user by username or email
+  findByUsernameOrEmail: async function (ue) {
+    return await this.findOne({ $or: [{ username: ue }, { email: ue }] });
+  },
 
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].role.toLowerCase() === role.toLowerCase()) {
-        if (skipCount++ < skip) {
-          continue;
-        }
-
-        if (usersCount < limit) {
-          usersArr.push(users[i]);
-          usersCount++;
-        } else {
-          break;
-        }
-      }
-    }
-
-    return usersArr;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return [];
-  }
-};
-
-// Find a user by id
-User.findById = async (id) => {
-  try {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].id == id) return users[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-// Find a user by email
-User.findByEmail = async (email) => {
-  try {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].email === email) return users[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-// Find a user by username
-User.findByUsername = async (username) => {
-  try {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].username === username) return users[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-// Find a user by username or email
-User.findByUsernameOrEmail = async (ue) => {
-  try {
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].username === ue || users[i].email === ue) return users[i];
-    }
-
-    return null;
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
-};
-
-User.createUser = async (params) => {
-  try {
-    let newId = users[users.length - 1].id;
-    users.push({
-      id: newId ? ++newId : 1,
-      firstname: params.firstname,
-      lastname: params.lastname,
-      email: params.email,
-      username: params.username,
-      password: params.password,
-      role: params.role,
+  createUser: async function ({
+    firstname,
+    lastname,
+    email,
+    username,
+    password,
+    role,
+  }) {
+    const user = await new this({
+      firstname,
+      lastname,
+      email,
+      password,
+      username,
+      role,
     });
 
-    return users[users.length - 1];
-  } catch (error) {
-    console.log("An error occured...");
-    console.log(error);
-    return null;
-  }
+    await user.save();
+
+    return user;
+  },
 };
 
-module.exports = User;
+export default model("Person", personSchema);
