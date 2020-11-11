@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="accounttype.css">
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+
+    <title>User Profile</title>
+</head>
+
+<body class="bg-dark text-white">
+    <div class="container-fluid">
+        <h1>User Profile</h1>
+        <div>
+            <form>
+                <div>
+                    <span>
+                        <img src="man-icon.png" alt="Avatar">
+                    </span>
+
+                    <label for="Username"> Username:</label>
+                    <input id="Username" type="text" required>
+
+                    <p>
+                    <div class="col-4">
+                        <label for="Username"> Email:</label>
+                        <input id="Email" type="email" required>
+                    </div>
+                    </p>
+
+                    <p></p>
+
+
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label name="Account Type" for="Account Type">Account Type: </label>
+                        <label class="btn btn-secondary active">
+                            <input type="radio" name="options" id="option1" checked> User
+                        </label>
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="options" id="option2"> Contributer
+                        </label>
+                    </div>
+
+                    <p></p>
+
+                    <a href="">Contributions</a>
+                    <p></p>
+                </div>
+            </form>
+
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="col-4">
+                <b>People</b>
+            </div>
+
+            <div class="col-4">
+                <b>Followers</b>
+            </div>
+
+            <div class="col-4">
+                <b>Following</b>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
