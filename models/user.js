@@ -49,6 +49,11 @@ const userSchema = new Schema(
       type: String,
       trim: true,
     },
+    role: {
+      type: String,
+      enum: ["user", "contributor"],
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -99,11 +104,6 @@ userSchema.statics = {
     })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
-  },
-
-  // Find a user by id
-  findById: async function (id) {
-    return await this.findById(id);
   },
 
   // Find a user by email

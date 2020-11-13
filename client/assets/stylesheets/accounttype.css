@@ -1,5 +1,10 @@
-img{
-	height: 50px;
-	width: 50px;
-	border-radius: 50%;
+img {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+body {
+  background-color: #343a40 !important;
+  color: white !important;
 }

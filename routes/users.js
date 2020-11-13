@@ -5,12 +5,18 @@ const { authorize } = require("../middleware");
 const router = express.Router();
 
 // Controller actions
-const { getUsers, getUser } = require("../controllers/users");
+const {
+  getUsers,
+  getUser,
+  getProfile,
+  editUser,
+  editProfile,
+} = require("../controllers/users");
 
 // == GET ROUTES
 
 /**
- * @route GET api/users
+ * @route GET /users
  * @description Get users
  * @access Public
  * Query params: name, role
@@ -18,8 +24,15 @@ const { getUsers, getUser } = require("../controllers/users");
 router.get("/", getUsers);
 
 /**
- * @route GET api/users/:id
- * @description Get user by id
+ * @route GET /users/profile
+ * @description Get current user's profile
+ * @access Private
+ */
+router.get("/profile", authorize, getProfile);
+
+/**
+ * @route GET /users/:id
+ * @description Get current user's
  * @access Public
  */
 router.get("/:id", getUser);
@@ -27,7 +40,7 @@ router.get("/:id", getUser);
 // == POST ROUTES
 
 /**
- * @route POST api/users
+ * @route POST /users
  * @description Create/add a movie
  * @access Public
  */
@@ -36,16 +49,23 @@ router.get("/:id", getUser);
 // == PUT/PATCH ROUTES
 
 /**
- * @route PATCH api/users/:id
- * @description Update a given movie
- * @access Public
+ * @route PATCH /users/profile
+ * @description  Edit current user's profile
+ * @access Private
  */
-// router.patch("/:id", updateMovie);
+router.patch("/profile", authorize, editProfile);
+
+/**
+ * @route PATCH /users/:id
+ * @description  Edit a given user profile
+ * @access Private
+ */
+router.patch("/:id", authorize, editUser);
 
 // == DELETE ROUTES
 
 /**
- * @route DELETE api/users/:id
+ * @route DELETE /users/:id
  * @description Delete a given movie
  * @access Public
  */
