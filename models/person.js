@@ -7,7 +7,9 @@
  * rank
  */
 
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
+
+const { Schema, model } = mongoose;
 
 const personSchema = new Schema({
   rank: {
@@ -65,6 +67,10 @@ personSchema.statics = {
     return await this.findById(id);
   },
 
+  // Find a person by name
+  findByName: async function ({ firstname, lastname = "", ...params }) {},
+
+  // Create a new person
   createPerson: async function ({ firstname, lastname, rank }) {
     const person = await new this({
       firstname,
@@ -78,4 +84,4 @@ personSchema.statics = {
   },
 };
 
-export default model("Person", personSchema);
+module.exports = model("Person", personSchema);

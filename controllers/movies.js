@@ -1,7 +1,7 @@
 // == MOVIES CONTROLLER
 
-const Movie = require("../models/movie");
-const Person = require("../models/person");
+const Movie = require("../models/Movie").default;
+const Person = require("../models/Person").default;
 
 const people = require("../db/people.json");
 let movies = require("../db/movies.json");

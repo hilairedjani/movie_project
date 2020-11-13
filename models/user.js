@@ -10,7 +10,10 @@
  * role
  */
 
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
+const validator = require("validator");
+
+const { Schema, model } = mongoose;
 
 const userSchema = new Schema(
   {
@@ -141,4 +144,4 @@ userSchema.statics = {
   },
 };
 
-export default model("Person", personSchema);
+module.exports = model("User", userSchema);

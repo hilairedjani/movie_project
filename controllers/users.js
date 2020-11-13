@@ -2,7 +2,7 @@
 
 let users = require("../db/users.json");
 
-const User = require("../models/user");
+const User = require("../models/User");
 
 /**
  * @description Fetch all users::First 10 users by default

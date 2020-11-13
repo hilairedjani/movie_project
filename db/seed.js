@@ -1,231 +1,200 @@
-const fs = require("fs");
+const mongoose = require("mongoose");
+
 const rawMovies = require("./movie-data-short.json");
-const { movies, people, users } = require("./index");
 
-(function seedDB() {
-  let movieCount = 0;
-  let peopleCount = 0;
+const mongoURI = "mongodb://localhost:27017/movie_project_development";
 
-  console.log("============================");
-  console.log("== Seeding DB");
-  console.log("============================");
+const Movie = require("../models/Movie");
+const User = require("../models/User");
+const Person = require("../models/Person");
+const Review = require("../models/Review");
 
-  for (let rm = 0; rm < rawMovies.length; rm++) {
-    console.log(`== Parsing movie ${rawMovies[rm].Title}`);
-    movieCount++;
+(async function seedDB() {
+  try {
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-    let movieObject = {};
-    movieObject.id = movieCount;
-    movieObject.title = rawMovies[rm].Title;
-    movieObject.releaseYear = rawMovies[rm].Year;
-    movieObject.genre = rawMovies[rm].Genre;
-    movieObject.runtime = rawMovies[rm].Runtime;
-    movieObject.plot = rawMovies[rm].Plot;
-    movieObject.rating = rawMovies[rm].Rated;
-    movieObject.country = rawMovies[rm].Country;
-    movieObject.image = rawMovies[rm].Poster;
-    movieObject.actors = [];
-    movieObject.directors = [];
-    movieObject.writers = [];
+    // Drop and then recreate database database
+    const { connection } = mongoose;
+    await mongoose.connection.db.dropDatabase(
+      console.log(`== ${connection.db.databaseName} database dropped.`)
+    );
 
-    // Split actors array and add actors to people and movie
-    let actorsRaw = rawMovies[rm].Actors.split(", ");
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
 
-    for (let ar = 0; ar < actorsRaw.length; ar++) {
-      let actorObject = null;
-      let firstname = actorsRaw[ar].split(" ")[0];
-      let lastname = actorsRaw[ar].split(" ")[1];
+    const db = mongoose.connection.db;
+    console.log(`== Database ${db.databaseName} created`);
 
-      for (let p = 0; p < people.length; p++) {
-        // If person is already in DB, skip person
-        if (
-          people[p].firstname == firstname &&
-          people[p].lastname == lastname &&
-          people[p].rank == "actor"
-        ) {
-          console.log(
-            `== Actor ${firstname} ${lastname} already in DB::Skip actor`
-          );
-          actorObject = people[p];
-          break;
-        }
-      }
+    console.log("============================");
+    console.log("== Seeding DB");
+    console.log("============================");
 
-      // If actor was not in DB, add to DB
-      if (!actorObject) {
-        actorObject = {};
-        peopleCount++;
-        actorObject.id = peopleCount;
-        actorObject.rank = "actor";
-        actorObject.firstname = firstname;
-        actorObject.lastname = lastname;
+    // Adding users
+    let user = null,
+      contributor = null;
+    for (let i = 0; i < 5; i++) {
+      contributor = await User.createUser({
+        firstname: "User",
+        lastname: `${i + 1}`,
+        email: `user${i + 1}@test.com`,
+        password: "password",
+        username: `user${i + 1}`,
+        role: "contributor",
+      });
+      console.log(`== Adding user ${contributor.username} to database`);
 
-        console.log(
-          `== Adding actor ${actorObject.firstname} ${actorObject.lastname} to database`
-        );
-        people.push(actorObject);
-      }
-
-      console.log(
-        `== Adding actor ${actorObject.firstname} ${actorObject.lastname} to movie ${movieObject.title}'s actors`
-      );
-      movieObject.actors.push(actorObject.id);
+      user = await User.createUser({
+        firstname: "John",
+        lastname: `Doe${i + 1}`,
+        email: `johndoe${i + 1}@test.com`,
+        password: "password",
+        username: `johndoe${i + 1}`,
+        role: "user",
+      });
+      console.log(`== Adding user ${user.username} to database`);
     }
 
-    // Split directors array and add directors to people and movie
-    let directorsRaw = rawMovies[rm].Director.split(", ");
+    // Parse and add movies
+    let movie = null;
+    for (let rm = 0; rm < rawMovies.length; rm++) {
+      console.log(`== Parsing movie ${rawMovies[rm].Title}`);
 
-    for (let dr = 0; dr < directorsRaw.length; dr++) {
-      let directorObject = null;
-      let firstname = directorsRaw[dr].split(" ")[0];
-      let lastname = directorsRaw[dr].split(" ")[1];
+      let movieObject = {};
+      movieObject.title = rawMovies[rm].Title;
+      movieObject.releaseYear = rawMovies[rm].Year;
+      movieObject.genre = rawMovies[rm].Genre;
+      movieObject.runtime = rawMovies[rm].Runtime;
+      movieObject.plot = rawMovies[rm].Plot;
+      movieObject.rating = rawMovies[rm].Rated;
+      movieObject.country = rawMovies[rm].Country;
+      movieObject.image = rawMovies[rm].Poster;
+      movieObject.actors = [];
+      movieObject.directors = [];
+      movieObject.writers = [];
 
-      for (let p = 0; p < people.length; p++) {
-        // If director is already in DB, skip person
-        if (
-          people[p].firstname == firstname &&
-          people[p].lastname == lastname &&
-          people[p].rank == "director"
-        ) {
-          console.log(
-            `== Director ${firstname} ${lastname} already in DB::Skip director`
-          );
-          directorObject = people[p];
-          break;
+      // Split actors array and add actors to people and movie
+      let actorsRaw = rawMovies[rm].Actors.split(", ");
+
+      for (let ar = 0; ar < actorsRaw.length; ar++) {
+        let firstname = actorsRaw[ar].split(" ")[0];
+        let lastname = actorsRaw[ar].split(" ")[1];
+
+        let actor = await Person.findOne({
+          firstname,
+          lastname,
+          rank: "actor",
+        });
+
+        //  If actor is not present, create them
+        if (!actor) {
+          console.log(`== Adding actor ${firstname} ${lastname} to database`);
+          actor = await Person.createPerson({
+            firstname,
+            lastname,
+            rank: "actor",
+          });
+          await actor.save();
         }
-      }
 
-      // If director was not in DB, add to DB
-      if (!directorObject) {
-        peopleCount++;
-        directorObject = {};
-        directorObject.id = peopleCount;
-        directorObject.rank = "director";
-        directorObject.firstname = firstname;
-        directorObject.lastname = lastname;
-
+        // Add actor to movie
         console.log(
-          `== Adding director ${directorObject.firstname} ${directorObject.lastname} to database`
+          `== Adding actor ${actor.firstname} ${actor.lastname} to movie ${movieObject.title}'s actors`
         );
-        people.push(directorObject);
+        movieObject.actors.push(actor._id);
       }
 
-      console.log(
-        `== Adding director ${directorObject.firstname} ${directorObject.lastname} to movie ${movieObject.title}'s directors`
-      );
-      movieObject.directors.push(directorObject.id);
+      // Split directors array and add directors to people and movie
+      let directorsRaw = rawMovies[rm].Director.split(", ");
+
+      for (let dr = 0; dr < directorsRaw.length; dr++) {
+        let firstname = directorsRaw[dr].split(" ")[0];
+        let lastname = directorsRaw[dr].split(" ")[1];
+
+        let director = await Person.findOne({
+          firstname,
+          lastname,
+          rank: "director",
+        });
+
+        //  If director is not present, create them
+        if (!director) {
+          console.log(
+            `== Adding director ${firstname} ${lastname} to database`
+          );
+          director = await Person.createPerson({
+            firstname,
+            lastname,
+            rank: "director",
+          });
+          await director.save();
+        }
+
+        // Add director to movie
+        console.log(
+          `== Adding director ${director.firstname} ${director.lastname} to movie ${movieObject.title}'s directors`
+        );
+        movieObject.directors.push(director._id);
+      }
+
+      // Split sriters array and add sriters to people and movie
+      let writersRaw = rawMovies[rm].Writer.split(", ");
+
+      for (let wr = 0; wr < writersRaw.length; wr++) {
+        let firstname = writersRaw[wr].split(" ")[0];
+        let lastname = writersRaw[wr].split(" ")[1];
+
+        let writer = await Person.findOne({
+          firstname,
+          lastname,
+          rank: "writer",
+        });
+
+        //  If writer is not present, create them
+        if (!writer) {
+          console.log(`== Adding writer ${firstname} ${lastname} to database`);
+          writer = await Person.createPerson({
+            firstname,
+            lastname,
+            rank: "writer",
+          });
+          await writer.save();
+        }
+
+        // Add writer to movie
+        console.log(
+          `== Adding writer ${writer.firstname} ${writer.lastname} to movie ${movieObject.title}'s writers`
+        );
+        movieObject.writers.push(writer._id);
+      }
+
+      // Save movie to DB
+      console.log(`== Adding movie ${movieObject.title} to database`);
+      movie = await Movie.createMovie(movieObject);
+
+      // Add a few reviews for this movie
+      for (let i = 1; i <= 5; i++) {
+        console.log(`== Adding review ${i} to movie ${movie.title}`);
+        await Review.createReview({
+          _user: contributor._id,
+          _movie: movie.id,
+          value: i,
+          reviewText: `Review: ${i} for movie: ${movie.title} by user: ${contributor.title}`,
+        });
+      }
     }
 
-    let writersRaw = rawMovies[rm].Writer.split(", ");
-
-    for (let wr = 0; wr < writersRaw.length; wr++) {
-      let writerObject = null;
-      let firstname = writersRaw[wr].split(" ")[0];
-      let lastname = writersRaw[wr].split(" ")[1];
-
-      for (let p = 0; p < people.length; p++) {
-        // If writer is already in DB, skip person
-        if (
-          people[p].firstname == firstname &&
-          people[p].lastname == lastname &&
-          people[p].rank == "writer"
-        ) {
-          console.log(
-            `== Writer ${firstname} ${lastname} already in DB::Skip writer`
-          );
-          writerObject = people[p];
-          break;
-        }
-      }
-
-      // If writer was not in DB, add to DB
-      if (!writerObject) {
-        peopleCount++;
-        writerObject = {};
-        writerObject.id = peopleCount;
-        writerObject.rank = "writer";
-        writerObject.firstname = firstname;
-        writerObject.lastname = lastname;
-
-        console.log(
-          `== Adding writer ${writerObject.firstname} ${writerObject.lastname} to database`
-        );
-        people.push(writerObject);
-      }
-
-      console.log(
-        `== Adding writer ${writerObject.firstname} ${writerObject.lastname} to movie ${movieObject.title}'s writers`
-      );
-      movieObject.writers.push(writerObject.id);
-    }
-
-    // Add movie to DB
-    console.log(`== Adding movie ${movieObject.title} to database`);
-    movies.push(movieObject);
+    console.log("============================");
+    console.log("== Seeding completed");
+    console.log("============================");
+    process.exit();
+  } catch (error) {
+    console.log("An error occured::Could not create database");
+    console.log(error);
+    process.exit(1);
   }
-
-  // Adding users
-  const user1 = {
-    id: 1,
-    firstname: "User",
-    lastname: "One",
-    email: "user1@test.com",
-    password: "password",
-    username: "userone",
-    role: "contributor",
-  };
-
-  console.log(`== Adding user ${user1.username} to database`);
-  users.push(user1);
-
-  const user2 = {
-    id: 2,
-    firstname: "User",
-    lastname: "Two",
-    email: "user2@test.com",
-    password: "password",
-    username: "usertwo",
-    role: "contributor",
-  };
-
-  console.log(`== Adding user ${user2.username} to database`);
-  users.push(user2);
-
-  const user3 = {
-    id: 3,
-    firstname: "John",
-    lastname: "Doe",
-    email: "johndoe@test.com",
-    password: "password",
-    username: "johndoe",
-    role: "user",
-  };
-
-  console.log(`== Adding user ${user3.username} to database`);
-  users.push(user3);
-
-  // Write data to files
-  console.log("== Writing movies to file db/movies.json");
-  fs.writeFile("db/movies.json", JSON.stringify(movies), function (err) {
-    if (err) throw err;
-    console.log("== Writing movies to db/movies.json completed");
-  });
-
-  console.log("== Writing people to file db/people.json");
-  fs.writeFile("db/people.json", JSON.stringify(people), function (err) {
-    if (err) throw err;
-    console.log("== Writing people to db/people.json completed");
-  });
-
-  console.log("== Writing users to file db/users.json");
-  fs.writeFile("db/users.json", JSON.stringify(users), function (err) {
-    if (err) throw err;
-    console.log("== Writing users to db/users.json completed");
-  });
-
-  console.log("============================");
-  console.log("== Seeding completed");
-  console.log(`== Movies: ${movies.length}`);
-  console.log(`== People: ${people.length}`);
-  console.log("============================");
 })();

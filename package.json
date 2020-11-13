@@ -21,7 +21,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "mongoose": "^5.10.13",
-    "pug": "^3.0.0"
+    "pug": "^3.0.0",
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

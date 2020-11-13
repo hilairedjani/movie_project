@@ -6,7 +6,9 @@
  * releaseYear
  */
 
-import { Schema, model } from "mongoose";
+const mongoose = require("mongoose");
+
+const { Schema, model } = mongoose;
 
 const movieSchema = new Schema({
   title: {
@@ -34,9 +36,9 @@ const movieSchema = new Schema({
   image: {
     type: String,
   },
-  actors: [Number],
-  directors: [Number],
-  writers: [Number],
+  actors: [Schema.Types.ObjectId],
+  directors: [Schema.Types.ObjectId],
+  writers: [Schema.Types.ObjectId],
 });
 
 // Instance methods
@@ -88,6 +90,39 @@ movieSchema.statics = {
   findById: async function (id) {
     return await this.findById(id);
   },
+
+  // Create a movie
+  createMovie: async function ({
+    title,
+    releaseYear,
+    genre,
+    runtime,
+    plot,
+    rating,
+    country,
+    image,
+    actors = [],
+    directors = [],
+    writers = [],
+  }) {
+    const movie = await new this({
+      title,
+      releaseYear,
+      genre,
+      runtime,
+      plot,
+      rating,
+      country,
+      image,
+      actors,
+      directors,
+      writers,
+    });
+
+    await movie.save();
+
+    return movie;
+  },
 };
 
-export default model("Movie", movieSchema);
+module.exports = model("Movie", movieSchema);

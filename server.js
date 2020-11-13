@@ -30,15 +30,16 @@ app.use((req, res, next) => {
 });
 
 // Add routes
-app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/movies", require("./routes/api/movies"));
-app.use("/api/people", require("./routes/api/people"));
-app.use("/api/users", require("./routes/api/users"));
+app.use("/auth", require("./routes/auth"));
+app.use("/movies", require("./routes/movies"));
+app.use("/people", require("./routes/people"));
+app.use("/users", require("./routes/users"));
+app.use("/reviews", require("./routes/reviews"));
 
-app.get("/", (req, res) => {
-  const movies = require("./db/movies.json");
-  res.render("index", { movies: movies });
-});
+// app.get("/", (req, res) => {
+//   const movies = require("./db/movies.json");
+//   res.render("index", { movies: movies });
+// });
 
 // Connect database
 connectDatabase();
