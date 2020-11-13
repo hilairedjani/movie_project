@@ -3,7 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 // Controller actions
-const { getUsers, getUser } = require("../../controllers/users");
+const { getUsers,
+    getUser,
+    editUser,
+
+} = require("../../controllers/users");
 
 // == GET ROUTES
 
@@ -39,6 +43,13 @@ router.get("/:id", getUser);
  * @access Public
  */
 // router.patch("/:id", updateMovie);
+
+/**
+ * @route PATCH api/users/:id
+ * @description  Edit a given user profile
+ * @access Public
+ */
+router.patch("/:id", editUser);
 
 // == DELETE ROUTES
 

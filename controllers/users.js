@@ -51,3 +51,31 @@ exports.getUser = async (req, res) => {
     return res.status(400).json(error);
   }
 };
+
+/**
+ * @description Update a given user profile 
+ */
+exports.editUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    User.findByIdAndUpdate(req.signedCookies.userid, userFields, function (err, user) {
+      firstName = req.body.firstName;
+      lastName = req.body.lastName;
+      userName = req.body.userName;
+      email = req.body.email;
+      role = req.body.role;
+      password = req.body.role
+    }
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
+    return res.json(user);
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
