@@ -1,13 +1,11 @@
 const express = require("express");
 
+const { authorize } = require("../middleware");
+
 const router = express.Router();
 
 // Controller actions
-const {
-  getPeople,
-  getPerson,
-  createPerson,
-} = require("../../controllers/people");
+const { getPeople, getPerson, createPerson } = require("../controllers/people");
 
 // == GET ROUTES
 
@@ -31,16 +29,16 @@ router.get("/:id", getPerson);
 /**
  * @route POST api/people
  * @description Create/add a person
- * @access Public
+ * @access Private
  */
-router.post("/", createPerson);
+router.post("/", authorize, createPerson);
 
 // == PUT/PATCH ROUTES
 
 /**
  * @route PATCH api/people/:id
  * @description Update a given movie
- * @access Public
+ * @access Private
  */
 // router.patch("/:id", updateMovie);
 

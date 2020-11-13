@@ -1,7 +1,10 @@
 const express = require("express");
+const session = require("express-session");
 const path = require("path");
 
 const { connectDatabase } = require("./db");
+
+const Movie = require("./models/Movie");
 
 // Create express server
 const app = express();
@@ -18,6 +21,13 @@ app.use(express.static("client"));
 // Apply app middleware
 app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: false }));
+app.use(
+  session({
+    secret: "movieDBSecret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // This middleware displays request details
 app.use((req, res, next) => {
@@ -36,10 +46,24 @@ app.use("/people", require("./routes/people"));
 app.use("/users", require("./routes/users"));
 app.use("/reviews", require("./routes/reviews"));
 
-// app.get("/", (req, res) => {
-//   const movies = require("./db/movies.json");
-//   res.render("index", { movies: movies });
-// });
+app.get("/", async (req, res) => {
+  const movies = await Movie.findAll({ limit: 25, skip: 0 });
+
+  return res.format({
+    "application/json": function () {
+      res.json(movies);
+    },
+
+    "text/html": function () {
+      res.render("index", { movies: movies });
+    },
+
+    default: function () {
+      // log the request and respond with 406
+      res.status(406).send("Not Acceptable");
+    },
+  });
+});
 
 // Connect database
 connectDatabase();

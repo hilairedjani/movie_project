@@ -67,7 +67,7 @@ const Review = require("../models/Review");
       let movieObject = {};
       movieObject.title = rawMovies[rm].Title;
       movieObject.releaseYear = rawMovies[rm].Year;
-      movieObject.genre = rawMovies[rm].Genre;
+      movieObject.genre = rawMovies[rm].Genre.split(", ");
       movieObject.runtime = rawMovies[rm].Runtime;
       movieObject.plot = rawMovies[rm].Plot;
       movieObject.rating = rawMovies[rm].Rated;
@@ -179,11 +179,9 @@ const Review = require("../models/Review");
       // Add a few reviews for this movie
       for (let i = 1; i <= 5; i++) {
         console.log(`== Adding review ${i} to movie ${movie.title}`);
-        await Review.createReview({
-          _user: contributor._id,
-          _movie: movie.id,
+        await Review.createReview(contributor._id, movie._id, {
           value: i,
-          reviewText: `Review: ${i} for movie: ${movie.title} by user: ${contributor.title}`,
+          reviewText: `Review: ${i} for movie: ${movie.title} by user: ${contributor.username}`,
         });
       }
     }

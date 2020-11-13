@@ -39,16 +39,17 @@ reviewSchema.methods = {};
 // Static methods
 reviewSchema.statics = {
   // Create a new review
-  createReview: async function ({ _user, _movie, value, reviewText = "" }) {
+  createReview: async function (_user, _movie, createParams) {
     // Check if user has already reviewed movie
     let review = await this.findOne({ _user, _movie });
 
     // If already reviewed, just update review
     if (review) {
-      review.value = value;
-      if (reviewText && reviewText.length > 0) review.reviewText = reviewText;
-
-      await review.save();
+      review = await this.findOneAndUpdate(
+        { _id: review._id },
+        { $set: createParams },
+        { new: true, runValidators: true }
+      );
 
       return review;
     }
@@ -57,8 +58,7 @@ reviewSchema.statics = {
     review = await new this({
       _user,
       _movie,
-      value,
-      reviewText,
+      ...createParams,
     });
 
     await review.save();
@@ -66,14 +66,51 @@ reviewSchema.statics = {
     return review;
   },
 
+  // Update a given review
+  updateReview: async function (_id, _user, updateParams) {
+    // Find and update review
+    const review = await this.findOneAndUpdate(
+      { _id, _user },
+      { $set: updateParams },
+      { new: true, runValidators: true }
+    );
+
+    return review;
+  },
+
+  // Find all reviews
+  findAll: async function ({ limit = 10, skip = 0 }) {
+    return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
+  },
+
   //   Find reviews for a given movie
-  findReviewsForMovie: async function (_movie) {
-    return await this.find({ _movie });
+  findAllForMovie: async function (_movie, { limit = 10, skip = 0 }) {
+    return await this.find({ _movie })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
   },
 
   //   Find reviews for a given user
-  findReviewsForUser: async function (_user) {
-    return await this.find({ _user });
+  findAllForUser: async function (_user, { limit = 10, skip = 0 }) {
+    return await this.find({ _user })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
+
+  //   Find reviews for on a movie by a given user
+  findAllForMovieByUser: async function (
+    _movie,
+    _user,
+    { limit = 10, skip = 0 }
+  ) {
+    return await this.find({ _movie, _user })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
+
+  // Find a given review by id
+  findById: async function (id) {
+    return await this.findById(id);
   },
 
   //   Calculate average review for a given movie

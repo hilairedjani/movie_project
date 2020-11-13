@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const { authorize } = require("../middleware");
+
 // Controller actions
 const {
   getMovies,
@@ -12,7 +14,7 @@ const {
   addDirector,
   addWriter,
   deleteMovie,
-} = require("../../controllers/movies");
+} = require("../controllers/movies");
 
 // == GET ROUTES
 
@@ -22,7 +24,7 @@ const {
  * @access Public
  * Query param: title, genre, year, minrating
  */
-router.get("/", getMovies);
+router.get("/", authorize, getMovies);
 
 /**
  * @route GET api/movies/:id
@@ -36,47 +38,47 @@ router.get("/:id", getMovieById);
 /**
  * @route POST api/movies
  * @description Create/add a movie
- * @access Public
+ * @access Private
  */
-router.post("/", createMovie);
+router.post("/", authorize, createMovie);
 
 // == PUT/PATCH ROUTES
 
 /**
  * @route PATCH api/movies/:id
  * @description Update a given movie
- * @access Public
+ * @access Private
  */
-router.patch("/:id", updateMovie);
+router.patch("/:id", authorize, updateMovie);
 
 /**
  * @route PATCH api/movies/:id/actors/:actorId
  * @description Add an actor to a given movie
- * @access Public
+ * @access Private
  */
-router.patch("/:id/actors/:actorId", addActor);
+router.patch("/:id/actors/:actorId", authorize, addActor);
 
 /**
  * @route PATCH api/movies/:id/directors/:directorId
  * @description Add a director to a given movie
- * @access Public
+ * @access Private
  */
-router.patch("/:id/directors/:directorId", addDirector);
+router.patch("/:id/directors/:directorId", authorize, addDirector);
 
 /**
  * @route PATCH api/movies/:id/writers/:writerId
  * @description Add a writer to a given movie
- * @access Public
+ * @access Private
  */
-router.patch("/:id/writers/:writerId", addWriter);
+router.patch("/:id/writers/:writerId", authorize, addWriter);
 
 // == DELETE ROUTES
 
 /**
  * @route DELETE api/movies/:id
  * @description Delete a given movie
- * @access Public
+ * @access Private
  */
-router.delete("/:id", deleteMovie);
+router.delete("/:id", authorize, deleteMovie);
 
 module.exports = router;

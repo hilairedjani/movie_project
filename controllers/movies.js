@@ -1,12 +1,9 @@
 // == MOVIES CONTROLLER
 
-const Movie = require("../models/Movie").default;
-const Person = require("../models/Person").default;
+const Movie = require("../models/Movie");
+const Person = require("../models/Person");
 
-const people = require("../db/people.json");
 let movies = require("../db/movies.json");
-
-let lastMovieId = movies.length;
 
 /**
  * @description Fetch all movies::First 10 movies by default
@@ -16,22 +13,22 @@ exports.getMovies = async (req, res) => {
     let skip = parseInt(req.query.skip) || 0;
     let limit = parseInt(req.query.limit) || 10;
 
-    let moviesArr = [];
+    let movies = [];
 
     // Return movies
     if (req.query.title) {
-      moviesArr = await Movie.findAllByTitle(req.query.title, { skip, limit });
+      movies = await Movie.findAllByTitle(req.query.title, { skip, limit });
     } else if (req.query.genre) {
-      moviesArr = await Movie.findAllByGenre(req.query.genre, { skip, limit });
+      movies = await Movie.findAllByGenre(req.query.genre, { skip, limit });
     } else if (req.query.year) {
-      moviesArr = await Movie.findAllByYear(req.query.year, { skip, limit });
+      movies = await Movie.findAllByYear(req.query.year, { skip, limit });
     } else {
-      moviesArr = await Movie.findAll({ skip, limit });
+      movies = await Movie.findAll({ skip, limit });
     }
 
     // Rendering files for now
     // return res.json(moviesArr);
-    return res.render("popularmovies", { movies: moviesArr });
+    return res.render("popularmovies", { movies });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -44,38 +41,42 @@ exports.getMovies = async (req, res) => {
  */
 exports.getMovieById = async (req, res) => {
   try {
-    const movieId = req.params.id;
-
-    const movie = await Movie.findById(movieId);
+    const movie = await Movie.findById(req.params.id).populate([
+      {
+        path: "actors",
+      },
+      {
+        path: "directors",
+      },
+      {
+        path: "writers",
+      },
+    ]);
 
     if (!movie) {
       return res.status(404).json({ message: "No movie found" });
     }
 
-    // Fetch actors, directors and writers
-    let actorIds = movie.actors,
-      directorIds = movie.directors,
-      writerIds = movie.writers;
+    const relatedMovies = await Movie.findAllByGenre(movie.genre, {
+      skip: 0,
+      limit: 2,
+      exlude: [movie.id],
+    });
 
-    movie.actors = [];
-    movie.directors = [];
-    movie.writers = [];
+    return res.format({
+      "application/json": function () {
+        res.json({ movie, relatedMovies });
+      },
 
-    for (let i = 0; i < people.length; i++) {
-      if (actorIds.includes(people[i].id)) movie.actors.push(people[i]);
+      "text/html": function () {
+        res.render("movie", { movie, relatedMovies });
+      },
 
-      if (directorIds.includes(people[i].id)) movie.directors.push(people[i]);
-
-      if (writerIds.includes(people[i].id)) movie.writers.push(people[i]);
-    }
-    const relatedMovies = await Movie.findAllByGenre(
-      movie.genre.split(", ")[0],
-      { skip: 0, limit: 2, exlude: [movie.id] }
-    );
-
-    // Render pug for now
-    // return res.json(movie);
-    return res.render("movie", { movie: movie, relatedMovies });
+      default: function () {
+        // log the request and respond with 406
+        res.status(406).send("Not Acceptable");
+      },
+    });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

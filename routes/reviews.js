@@ -1,9 +1,19 @@
 const express = require("express");
 
+const { authorize } = require("../middleware");
+
 const router = express.Router();
 
 // Controller actions
-const {} = require("../../controllers/reviews");
+const {
+  getReviews,
+  getUserReviews,
+  getMovieReviews,
+  getMovieReviewsByUser,
+  getReview,
+  createReview,
+  updateReview,
+} = require("../controllers/reviews");
 
 // == GET ROUTES
 
@@ -33,7 +43,7 @@ router.get("/movie/:_movie", getMovieReviews);
  * @description Get all reviews for a given movie by a given user
  * @access Public
  */
-router.get("/movie/:_movie/user/:_user", getMovieReviewsForUser);
+router.get("/movie/:_movie/user/:_user", getMovieReviewsByUser);
 
 /**
  * @route GET /reviews/:id
@@ -47,25 +57,25 @@ router.get("/:id", getReview);
 /**
  * @route POST /reviews/movie/:_movie/user/:_user
  * @description Create/add a review for a movie
- * @access Public
+ * @access Private
  */
-router.post("/movie/:_movie/user/:_user", createReview);
+router.post("/movie/:_movie/user/:_user", authorize, createReview);
 
 // == PUT/PATCH ROUTES
 
 /**
  * @route PATCH reviews/:id
  * @description Update a given review
- * @access Public
+ * @access Private
  */
-router.patch("/:id", updateReview);
+router.patch("/:id", authorize, updateReview);
 
 // == DELETE ROUTES
 
 /**
  * @route DELETE api/people/:id
  * @description Delete a given movie
- * @access Public
+ * @access Private
  */
 // router.delete("/:id", deleteMovie);
 

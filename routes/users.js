@@ -1,9 +1,11 @@
 const express = require("express");
 
+const { authorize } = require("../middleware");
+
 const router = express.Router();
 
 // Controller actions
-const { getUsers, getUser } = require("../../controllers/users");
+const { getUsers, getUser } = require("../controllers/users");
 
 // == GET ROUTES
 

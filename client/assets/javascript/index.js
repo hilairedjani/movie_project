@@ -1,7 +1,7 @@
 const login = async (username, password) => {
   try {
     const response = await $.ajax({
-      url: "/api/auth/login",
+      url: "/auth/login",
       type: "POST",
       data: { username, password },
     });
@@ -9,7 +9,7 @@ const login = async (username, password) => {
     alert("Logged in successfully");
 
     // Go to movies page
-    window.location.replace("/api/movies");
+    window.location.replace("/movies");
   } catch (error) {
     console.log(error.responseText);
     return alert(error.responseJSON.message);
@@ -34,7 +34,7 @@ const handleLogin = async () => {
 const register = async (registerParams) => {
   try {
     const response = await $.ajax({
-      url: "/api/auth/register",
+      url: "/auth/register",
       type: "POST",
       data: registerParams,
     });
@@ -42,7 +42,7 @@ const register = async (registerParams) => {
     alert("Registered successfully");
 
     // Go to movies page
-    window.location.replace("/api/movies");
+    window.location.replace("/movies");
   } catch (error) {
     console.log(error.responseText);
     return alert(error.responseJSON.message);

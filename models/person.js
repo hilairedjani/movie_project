@@ -68,7 +68,34 @@ personSchema.statics = {
   },
 
   // Find a person by name
-  findByName: async function ({ firstname, lastname = "", ...params }) {},
+  findByName: async function ({ firstname = "", lastname = "", ...params }) {
+    if (lastname.length > 0 && firstname.length > 0)
+      return await this.findOne({ $or: [{ firstname }, { lastname }] });
+
+    if (firstname.length > 0) return await this.findOne({ firstname });
+
+    return await this.findOne({ lastname });
+  },
+
+  // Find a person by name and rank
+  findByNameAndRank: async function ({ firstname = "", lastname = "", rank }) {
+    if (lastname.length > 0 && firstname.length > 0)
+      return await this.findOne({
+        $and: [
+          { rank: rank.toLowerCase() },
+          { $or: [{ firstname }, { lastname }] },
+        ],
+      });
+
+    if (firstname.length > 0)
+      return await this.findOne({
+        $and: [{ rank: rank.toLowerCase() }, { firstname }],
+      });
+
+    return await this.findOne({
+      $and: [{ rank: rank.toLowerCase() }, { lastname }],
+    });
+  },
 
   // Create a new person
   createPerson: async function ({ firstname, lastname, rank }) {

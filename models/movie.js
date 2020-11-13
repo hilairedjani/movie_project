@@ -36,9 +36,24 @@ const movieSchema = new Schema({
   image: {
     type: String,
   },
-  actors: [Schema.Types.ObjectId],
-  directors: [Schema.Types.ObjectId],
-  writers: [Schema.Types.ObjectId],
+  actors: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Person",
+    },
+  ],
+  directors: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Person",
+    },
+  ],
+  writers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Person",
+    },
+  ],
 });
 
 // Instance methods
@@ -74,7 +89,7 @@ movieSchema.statics = {
   ) {
     // let re = new RegExp(genre, "i");
 
-    return await this.find({ genre: genre, _id: { $nin: exlude } })
+    return await this.find({ genre: { $in: genre }, _id: { $nin: exlude } })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
   },
@@ -84,11 +99,6 @@ movieSchema.statics = {
     return await this.find({ year: year })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
-  },
-
-  // Find a movie by id
-  findById: async function (id) {
-    return await this.findById(id);
   },
 
   // Create a movie

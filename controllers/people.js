@@ -1,7 +1,6 @@
 // == PEOPLE CONTROLLER
 
-const Person = require("../models/person").default;
-const people = require("../db/people.json");
+const Person = require("../models/Person");
 
 /**
  * @description Fetch all people::First 10 people by default
@@ -12,14 +11,14 @@ exports.getPeople = async (req, res) => {
     let limit = parseInt(req.query.limit) || 10;
 
     //   Return all people in db
-    let peopleArr = [];
+    let people = [];
 
     if (req.query.name) {
-      peopleArr = await Person.findAllByName(req.query.name, { skip, limit });
+      people = await Person.findAllByName(req.query.name, { skip, limit });
     } else if (req.query.rank) {
-      peopleArr = await Person.findAllByRank(req.query.rank, { skip, limit });
+      people = await Person.findAllByRank(req.query.rank, { skip, limit });
     } else {
-      peopleArr = await Person.findAll({ skip, limit });
+      people = await Person.findAll({ skip, limit });
     }
 
     return res.json(peopleArr);
@@ -38,24 +37,48 @@ exports.getActors = async (req, res) => {
     let skip = req.query.skip || 0;
     let limit = req.query.limit || 10;
 
-    //   Return all people in db
-    let actorsCount = 0;
-    let skipCount = 0;
-    const actorsArr = [];
-    while (actorsCount < limit) {
-      for (let i = 0; i < people.length; i++) {
-        if (people[i].rank == "actor") {
-          if (skipCount++ < skip) {
-            continue;
-          }
+    //   Return all actors in db
+    const actors = await Person.findAllByRank("actor", { skip, limit });
 
-          actorsArr.push(people[i]);
-          actorsCount++;
-        }
-      }
-    }
+    return res.json(actors);
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
 
-    return res.json(actorsArr);
+/**
+ * @description Fetch directors::First 10 by default
+ */
+exports.getDirectors = async (req, res) => {
+  try {
+    let skip = req.query.skip || 0;
+    let limit = req.query.limit || 10;
+
+    //   Return all directors in db
+    const actors = await Person.findAllByRank("director", { skip, limit });
+
+    return res.json(actors);
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
+
+/**
+ * @description Fetch writers::First 10 by default
+ */
+exports.getWriters = async (req, res) => {
+  try {
+    let skip = req.query.skip || 0;
+    let limit = req.query.limit || 10;
+
+    //   Return all writers in db
+    const actors = await Person.findAllByRank("writer", { skip, limit });
+
+    return res.json(actors);
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -102,16 +125,17 @@ exports.createPerson = async (req, res) => {
     if (!rank || rank.length <= 0)
       return res.status(400).json({ message: "Rank is required" });
 
-    for (let i = 0; i < people.length; i++) {
-      if (
-        people[i].firstname === firstname &&
-        people[i].lastname === lastname &&
-        people[i].rank === rank.toLowerCase()
-      )
-        return res.status(400).json({ message: "Person already exists" });
-    }
+    // Check if person already exists
+    let person = await Person.findByNameAndRank({
+      firstname,
+      lastname,
+      rank: rank.toLowerCase(),
+    });
 
-    const person = await Person.createPerson({ firstname, lastname, rank });
+    if (person)
+      return res.status(400).json({ message: "Person already exists" });
+
+    person = await Person.createPerson({ firstname, lastname, rank });
 
     return res.json(person);
   } catch (error) {

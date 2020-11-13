@@ -1,7 +1,6 @@
 // == AUTH CONTROLLER
 
-const User = require("../models/user");
-let users = require("../db/users.json");
+const User = require("../models/User");
 
 /**
  * @description Login a user
@@ -27,6 +26,9 @@ exports.login = async (req, res) => {
       return res
         .status(400)
         .json({ message: "Username or password incorrect" });
+
+    // Store user id in session object
+    req.session.user = user.id;
 
     return res.json({ user, message: "User logged in successfully" });
   } catch (error) {
@@ -60,14 +62,15 @@ exports.register = async (req, res) => {
     if (!role || role.length <= 0)
       return res.status(400).json({ message: "Role is required" });
 
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].email === email || users[i].username === username)
-        return res
-          .status(400)
-          .json({ message: "Username or email already in use" });
-    }
+    // Check if email is already used
+    if (await User.findByEmail(email))
+      return res.status(400).json({ message: "Email already in use" });
 
-    // Add user
+    // Check is username is already used
+    if (await User.findByUsername(username))
+      return res.status(400).json({ message: "Username already in use" });
+
+    // Register/create user
     const user = await User.createUser({
       firstname,
       lastname,
@@ -77,7 +80,11 @@ exports.register = async (req, res) => {
       role,
     });
 
-    if (!user) return res.status(400).json({ message: "Could not add user" });
+    if (!user)
+      return res.status(400).json({ message: "Could not register user" });
+
+    // Add user id to session object
+    req.session.user = user.id;
 
     return res.json(user);
   } catch (error) {
