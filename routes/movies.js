@@ -24,7 +24,7 @@ const {
  * @access Public
  * Query param: title, genre, year, minrating
  */
-router.get("/", authorize, getMovies);
+router.get("/", getMovies);
 
 /**
  * @route GET api/movies/:id
