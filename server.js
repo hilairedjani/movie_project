@@ -4,7 +4,7 @@ const path = require("path");
 
 const { connectDatabase } = require("./db");
 
-const Movie = require("./models/Movie");
+const Movie = require("./models/movie");
 
 // Create express server
 const app = express();

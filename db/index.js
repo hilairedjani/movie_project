@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
-const mongoURI = "mongodb://localhost:27017/movie_project_development";
+const mongoURI =
+  process.env.NODE_ENV === "production"
+    ? "mongodb+srv://movie_project:movieproject@movieproject.2ge01.mongodb.net/movieProject?retryWrites=true&w=majority"
+    : "mongodb://localhost:27017/movie_project_development";
 
 exports.connectDatabase = async () => {
   try {

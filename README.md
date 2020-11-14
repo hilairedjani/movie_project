@@ -52,7 +52,7 @@
 
     - Other New Files
     - userprofile.pug - contains the basic information about the users account
-    - movie.pug - contains basic information about a movie
+    - movie.pug - displays basic information about a movie and also displays a movie review system
     - addmovie.pug - displays the form to be filled when adding a movie
       - seed.js - Contains the logic that parses through raw data, converts the data to a compatible type and seeds the project's database. This now makes use of a MongoDB database
 

@@ -1,6 +1,6 @@
 // == AUTH CONTROLLER
 
-const User = require("../models/User");
+const User = require("../models/user");
 
 /**
  * @description Login a user

@@ -50,14 +50,14 @@ head
                     li(data-target="#top-movies" data-slide-to=index+1)
             #top-movies-carousel-inner.carousel-inner
                 .carousel-item.movie-list-item.active
-                        a(href=`/api/movies/${movies[0].id}`)
+                        a(href=`/movies/${movies[0].id}`)
                             img.d-block.w-100(src=movies[0].image  alt='...')
                             .carousel-caption.d-none.d-md-block.bg-dark
                                 h5 !{movies[0].title}
                                 p !{movies[0].plot}
                 for movie of movies.slice(1, movies.length)
                     .carousel-item.movie-list-item
-                        a(href=`/api/movies/${movie.id}`)
+                        a(href=`/movies/${movie.id}`)
                             img.d-block.w-100(src=movie.image  alt='...')
                             .carousel-caption.d-none.d-md-block.bg-dark
                                 h5 !{movie.title}

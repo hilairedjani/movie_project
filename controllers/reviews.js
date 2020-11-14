@@ -1,6 +1,6 @@
 // == PEOPLE CONTROLLER
 
-const Review = require("../models/Review");
+const Review = require("../models/review");
 
 /**
  * @description Fetch all reviews::First 10 reviews by default

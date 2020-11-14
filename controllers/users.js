@@ -1,6 +1,6 @@
 // == USERS CONTROLLER
 
-const User = require("../models/User");
+const User = require("../models/user");
 
 /**
  * @description Fetch all users::First 10 users by default

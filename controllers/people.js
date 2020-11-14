@@ -1,6 +1,6 @@
 // == PEOPLE CONTROLLER
 
-const Person = require("../models/Person");
+const Person = require("../models/person");
 
 /**
  * @description Fetch all people::First 10 people by default
