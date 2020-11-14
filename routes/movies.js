@@ -24,14 +24,14 @@ const {
  * @access Public
  * Query param: title, genre, year, minrating
  */
-router.get("/", getMovies);
+router.get("/", authorize, getMovies);
 
 /**
  * @route GET api/movies/:id
  * @description Get movie by id
  * @access Public
  */
-router.get("/:id", getMovieById);
+router.get("/:id", authorize, getMovieById);
 
 // == POST ROUTES
 
