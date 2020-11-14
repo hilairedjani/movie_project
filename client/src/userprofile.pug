@@ -13,15 +13,24 @@ head
   h1 User Profile
   div
     form
+      .row
+        .col
+          img(src='man-icon.png' alt='Avatar')
+      
+      .row
+        .col-6
+          label(for='firstname')  Firstname:
+          input#firstname.form-control(type='text' required='' value=profile.firstname)
+        .col-6
+          label(for='lastname')  Lastname:
+          input#lastname.form-control(type='text' required='' value=profile.lastname)
       div
         span
-          img(src='man-icon.png' alt='Avatar')
-        label(for='Username')  Username:
-        input#Username(type='text' required='')
+        
         p
           .col-4
             label(for='Username')  Email:
-            input#Email(type='email' required='')
+            input#Email(type='email' required='' value=profile.email)
         p
         .btn-group.btn-group-toggle(data-toggle='buttons')
           label(name='Account Type' for='Account Type') Account Type: 
