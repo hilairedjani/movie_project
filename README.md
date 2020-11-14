@@ -25,6 +25,7 @@ README Requirements:
       - Once in the instance, change the environment to production by running "export NODE_ENV=production" (This is because we are using a deployed mongodb database for our openstack instance)
       - cd into the project folder "movie_project"
       - Start the server by running the command "npm start"
+      - Login with user email: "user1@test.com", password: "password" or register a new user
       - Enjoy!!!
 
 4.  INSTALLATION AND TEST INSTRUCTIONS
