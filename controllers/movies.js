@@ -1,7 +1,7 @@
 // == MOVIES CONTROLLER
 
 const Movie = require("../models/movie");
-const Person = require("../models/Person");
+const Person = require("../models/person");
 
 let movies = require("../db/movies.json");
 

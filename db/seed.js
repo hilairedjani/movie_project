@@ -5,9 +5,9 @@ const rawMovies = require("./movie-data-short.json");
 const mongoURI = "mongodb://localhost:27017/movie_project_development";
 
 const Movie = require("../models/movie");
-const User = require("../models/User");
-const Person = require("../models/Person");
-const Review = require("../models/Review");
+const User = require("../models/user");
+const Person = require("../models/person");
+const Review = require("../models/review");
 
 (async function seedDB() {
   try {
