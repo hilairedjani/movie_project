@@ -1,0 +1,15 @@
+mixin header({hideProfile =  false})
+    .row.p-2
+        .col
+            h1
+                a(href="/")
+                    i.fas.fa-film
+                    | &nbsp;Movies 55
+        if !hideProfile
+            .col-auto.text-center
+                a(href="/users/profile")
+                    i.fas.fa-user-circle.fa-2x
+                    br
+                    | &nbsp;My Profile
+    
+    hr.text-muted

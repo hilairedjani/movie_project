@@ -1,54 +1,57 @@
-doctype html
-head
-  link(href='../assets/stylesheets/accounttype.css' type='text/css' rel='stylesheet')
+include pageHead
+include header
 
-  // CSS only
-  link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' integrity='sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z' crossorigin='anonymous')
-  // JS, Popper.js, and jQuery
-  script(src='https://code.jquery.com/jquery-3.5.1.slim.min.js' integrity='sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj' crossorigin='anonymous')
-  script(src='https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js' integrity='sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN' crossorigin='anonymous')
-  script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js' integrity='sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV' crossorigin='anonymous')
-  title User Profile
++pageHead("Movie 55 - User Profile", [ '../assets/javascript/profile.js'], ['../assets/stylesheets/index.css','../assets/stylesheets/accounttype.css' ])
++header({hideProfile: true})
+
 .container-fluid
-  h1 User Profile
-  div
-    form
-      .row
-        .col
-          img(src='man-icon.png' alt='Avatar')
-      
-      .row
-        .col-6
-          label(for='firstname')  Firstname:
-          input#firstname.form-control(type='text' required='' value=profile.firstname)
-        .col-6
-          label(for='lastname')  Lastname:
-          input#lastname.form-control(type='text' required='' value=profile.lastname)
-      div
-        span
-          img(src='../assets/images/man-icon.png' alt='Avatar')
-        label(for='Username')  Username:
-        input#Username(type='text' required='')
-        p
-          .col-4
-            label(for='Username')  Email:
-            input#Email(type='email' required='' value=profile.email)
-        p
-        .btn-group.btn-group-toggle(data-toggle='buttons')
-          label(name='Account Type' for='Account Type') Account Type: 
-          label.btn.btn-secondary.active
-            input#option1(type='radio' name='options' checked='')
-            |  User
-          label.btn.btn-secondary
-            input#option2(type='radio' name='options')
-            |  Contributer
-        p
-        a(href='') Contributions
-        p
   .row
-    .col-4
-      b People
-    .col-4
-      b Followers
-    .col-4
-      b Following
+    .col-sm-6.offset-sm-3
+      h1 User Profile
+      .card.card-body
+        form#edit-profile-form
+          .row
+            .col.text-center
+              h4 My Profile
+              img(src='../assets/images/man-icon.png' alt='Avatar')
+          
+          .row
+            .col-6
+              .form-group
+                label(for='user-username')  Username
+                input#user-username.form-control(type='text', required value=profile.username)
+            .col-6
+              .form-group
+                label(for='user-email')  Email
+                input#user-email.form-control(type='email', required, value=profile.email)
+
+            .col-6
+              .form-group
+                label(for='user-firstname')  Firstname
+                input#user-firstname.form-control(type='text' value=profile.firstname)
+
+            .col-6
+              .form-group
+                label(for='user-lastname')  Lastname
+                input#user-lastname.form-control(type='text' value=profile.lastname)
+          .row  
+            .col
+              .form-group
+              label(for='user-role') Account Type
+              select#user-role.custom-select
+                 option(value='user' selected=profile.role == "user") User
+                 option(value='contributor' selected=profile.role == "contributor") Contributor
+
+          .row
+            .col-12.pt-3
+              button.btn.btn-primary.float-right(type='submit') Save Changes
+
+      p
+          a(href='') Contributions
+      .row
+        .col-4
+          b People
+        .col-4
+          b Followers
+        .col-4
+          b Following

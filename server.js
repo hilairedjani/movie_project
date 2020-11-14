@@ -55,7 +55,8 @@ app.get("/", async (req, res) => {
     },
 
     "text/html": function () {
-      res.render("index", { movies: movies });
+      if (req.session.user) res.render("popularmovies", { movies: movies });
+      else res.render("index", { movies: movies });
     },
 
     default: function () {

@@ -126,7 +126,7 @@ exports.editProfile = async (req, res) => {
   try {
     const id = req.user;
 
-    let { firstname, lastname, role } = req.body;
+    let { firstname, lastname, role, email, username } = req.body;
 
     let userFields = {};
 
