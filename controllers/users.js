@@ -69,7 +69,7 @@ exports.getProfile = async (req, res) => {
       },
 
       "text/html": function () {
-        res.render("userProfile", { profile });
+        res.render("userprofile", { profile });
       },
 
       default: function () {
