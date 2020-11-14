@@ -1,4 +1,4 @@
-    			COMP 2406B PROJECT CHECK IN 3
+    			COMP 2406B PROJECT CHECK IN 2
 
     README Requirements:
 
@@ -27,34 +27,29 @@
 
 4.  FILES/FOLDERS
 
-    - routes
+    - routes/api
       - The api folder in the routes folder contains all the api route endpoints for the app
       - auth.js - contains authentication routes (register, login)
-      - user.js - contains user related routes (e.g. get user by id, esiting user accounts/profiles)
+      - user.js - contains user related routes (e.g. get user by id)
       - movies.js - contains movie related routes (e.g. get user a list of movies)
       - people.js - contains people related routes (e.g. get an actor by id)
-      - review.js - contains review related routes( e.g. get a movie/user review)
-      
     - controllers/
       - This folder contains all controller actions to handle api requests
       - auth.js - contains controller actions to handle auth requests
       - users.js - contains controller actions to handle user requests
       - movies.js - contains controller actions to handle movie requests
       - people.js - contains controller actions to handle people requests
-      - review.js - contains controller actions to handle review requests
-
     - models/
+
       - This folder contains logic for the project's models (i.e user, person, e.t.c)
       - user.js - contains logic for the user model
       - person.js - contains logic for the person model
       - movie.js - contains logic for the movie model
-      - review.js - contains logic for the review model
 
     - Other New Files
-    - userprofile.pug - contains the basic information about the users account
-    - movie.pug - contains basic information about a movie
-    - addmovie.pug - displays the form to be filled when adding a movie
-      - seed.js - Contains the logic that parses through raw data, converts the data to a compatible type and seeds the project's database. This now makes use of a MongoDB database
+      - Popularmovies.pug - This displays the template for trending/popular movies
+      - Movie.pug- This dispalys the template for a particular movie
+      - seed.js - Contains the logic that parses through raw data, converts the data to a compatible type and seeds the project's database
 
 5.  FURTHER INFORMATION
 
