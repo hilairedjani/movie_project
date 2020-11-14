@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const rawMovies = require("./movie-data-short.json");
 
-const mongoURI = "mongodb://localhost:27017/movie_project_development";
+const mongoURI =
+  process.env.NODE_ENV === "production"
+    ? "mongodb+srv://movie_project:movieproject@movieproject.2ge01.mongodb.net/movieProject?retryWrites=true&w=majority"
+    : "mongodb://localhost:27017/movie_project_development";
 
 const Movie = require("../models/movie");
 const User = require("../models/user");
