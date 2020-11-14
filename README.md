@@ -64,3 +64,9 @@
     - The app uses bootstrap as a client component framework
     - The app uses pug as template engine with server side rendering
     - The logic for logging in and registering was added (Minimally)
+
+6. OPEN STACK INSTRUCTIONS
+    - Instance information: Public Key: "134.117.129.59", password:"password" , username: "student".
+    - Cd into the project folder "movie_project".
+    - To Run server run "npm start" in the terminal.
+
