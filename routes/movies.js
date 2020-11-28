@@ -33,6 +33,13 @@ router.get("/", authorize, getMovies);
  */
 router.get("/:id", authorize, getMovieById);
 
+/**
+ * @route GET api/movies/:title
+ * @description Scrape movie by title
+ * @access Public
+ */
+router.get("/scraper:title", authorize, scraper);
+
 // == POST ROUTES
 
 /**
