@@ -7,6 +7,7 @@ const { authorize } = require("../middleware");
 // Controller actions
 const {
   getMovies,
+  getPopularMovies,
   getMovieById,
   createMovie,
   updateMovie,
@@ -24,7 +25,14 @@ const {
  * @access Public
  * Query param: title, genre, year, minrating
  */
-router.get("/", authorize, getMovies);
+router.get("/", getMovies);
+
+/**
+ * @route GET api/movies/popular
+ * @description Get popular movies
+ * @access Public
+ */
+router.get("/popular", getPopularMovies);
 
 /**
  * @route GET api/movies/:id

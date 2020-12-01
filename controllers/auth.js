@@ -1,5 +1,7 @@
 // == AUTH CONTROLLER
 
+const jwt = require("jsonwebtoken");
+
 const User = require("../models/user");
 
 /**
@@ -19,7 +21,10 @@ exports.login = async (req, res) => {
     // Check is user exists
     const user = await User.findByUsernameOrEmail(ue);
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user)
+      return res
+        .status(404)
+        .json({ message: "Username or password incorrect" });
 
     // Check if password matches
     if (user.password !== password)
@@ -27,10 +32,17 @@ exports.login = async (req, res) => {
         .status(400)
         .json({ message: "Username or password incorrect" });
 
-    // Store user id in session object
-    req.session.user = user.id;
+    //
 
-    return res.json({ user, message: "User logged in successfully" });
+    // Store user id in session object
+    // req.session.user = user.id;
+
+    // Sign jwt
+    const token = await jwt.sign({ user: user.id }, process.env.JWT_SECRET);
+
+    return res
+      .header("x-auth-token", token)
+      .json({ user, token, message: "User logged in successfully" });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -83,8 +95,35 @@ exports.register = async (req, res) => {
     if (!user)
       return res.status(400).json({ message: "Could not register user" });
 
+    // Sign jwt
+    const token = await jwt.sign({ user: user.id }, process.env.JWT_SECRET);
+
     // Add user id to session object
-    req.session.user = user.id;
+    // req.session.user = user.id;
+
+    // Return registered user and add token to header
+    return res
+      .header("x-auth-token", token)
+      .json({ user, token, message: "Registered successfully" });
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
+
+/**
+ * @description Get current logged user
+ */
+exports.getCurrentUser = async (req, res) => {
+  try {
+    const id = req.user;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     return res.json(user);
   } catch (error) {

@@ -1,15 +1,25 @@
 const express = require("express");
+const http = require("http");
 const session = require("express-session");
 const path = require("path");
+const dotenv = require("dotenv");
+const socketIO = require("socket.io");
 
 const { connectDatabase } = require("./db");
 
 const Movie = require("./models/movie");
 
-// Create express server
+// Create express app
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+// Initialize environment variables
+dotenv.config();
+
+// Create app server and connect to socket
+const server = http.createServer(app);
+const io = socketIO(server);
+
+const PORT = process.env.PORT || 5000;
 
 // Set view engine::Pug
 app.set("view engine", "pug");
@@ -45,29 +55,35 @@ app.use("/movies", require("./routes/movies"));
 app.use("/people", require("./routes/people"));
 app.use("/users", require("./routes/users"));
 app.use("/reviews", require("./routes/reviews"));
+app.use("/contributions", require("./routes/contributions"));
 
-app.get("/", async (req, res) => {
-  const movies = await Movie.findAll({ limit: 25, skip: 0 });
+// app.get("/", async (req, res) => {
+//   const movies = await Movie.findAll({ limit: 25, skip: 0 });
 
-  return res.format({
-    "application/json": function () {
-      res.json(movies);
-    },
+//   return res.format({
+//     "application/json": function () {
+//       res.json(movies);
+//     },
 
-    "text/html": function () {
-      if (req.session.user) res.render("popularmovies", { movies: movies });
-      else res.render("index", { movies: movies });
-    },
+//     "text/html": function () {
+//       if (req.session.user) res.render("popularmovies", { movies: movies });
+//       else res.render("index", { movies: movies });
+//     },
 
-    default: function () {
-      // log the request and respond with 406
-      res.status(406).send("Not Acceptable");
-    },
-  });
-});
+//     default: function () {
+//       // log the request and respond with 406
+//       res.status(406).send("Not Acceptable");
+//     },
+//   });
+// });
 
 // Connect database
 connectDatabase();
+
+// Start socket
+io.on("connect", (socket) => {
+  console.log("== Connected");
+});
 
 // Start server
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

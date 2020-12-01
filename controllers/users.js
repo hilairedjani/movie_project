@@ -1,6 +1,7 @@
 // == USERS CONTROLLER
 
 const User = require("../models/user");
+const Contribution = require("../models/contribution");
 
 /**
  * @description Fetch all users::First 10 users by default
@@ -34,7 +35,7 @@ exports.getUsers = async (req, res) => {
  */
 exports.getUser = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const userId = req.params._id;
 
     const user = await User.findById(userId);
 
@@ -57,26 +58,19 @@ exports.getProfile = async (req, res) => {
   try {
     const id = req.user;
 
-    const profile = await User.findById(id);
+    const profile = await User.findById(id).lean();
 
     if (!profile) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.format({
-      "application/json": function () {
-        res.json(profile);
-      },
+    // Fetch user contributions
+    profile.contributions = await Contribution.find({ _user: profile._id })
+      .limit(10)
+      .skip(0)
+      .populate("_item", ["title", "firstname", "lastname", "rank"]);
 
-      "text/html": function () {
-        res.render("userprofile", { profile });
-      },
-
-      default: function () {
-        // log the request and respond with 406
-        res.status(406).send("Not Acceptable");
-      },
-    });
+    return res.json(profile);
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -146,7 +140,7 @@ exports.editProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.json(user);
+    return res.json({ user, message: "Profile updated successfully" });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

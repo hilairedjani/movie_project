@@ -1,6 +1,9 @@
 // == PEOPLE CONTROLLER
 
 const Person = require("../models/person");
+const Contribution = require("../models/contribution");
+
+const mongoose = require("mongoose");
 
 /**
  * @description Fetch all people::First 10 people by default
@@ -135,9 +138,45 @@ exports.createPerson = async (req, res) => {
     if (person)
       return res.status(400).json({ message: "Person already exists" });
 
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    // Create person
     person = await Person.createPerson({ firstname, lastname, rank });
 
-    return res.json(person);
+    if (!person) {
+      await session.abortTransaction();
+      return res.status(401).json({ message: "Could not add person" });
+    }
+
+    // Add contribution
+    let contribution;
+    if (req.user) {
+      contribution = await Contribution.createContribution({
+        _user: req.user,
+        type: "Person",
+        _item: person._id,
+      });
+
+      if (!contribution) {
+        await session.abortTransaction();
+        return res.status(401).json({ message: "Could not add contribution" });
+      }
+    }
+
+    await session.commitTransaction();
+
+    console.log(
+      `== Person ${person.firstname} ${person.lastname} created successfully`
+    );
+
+    session.endSession();
+
+    return res.json({
+      person,
+      contribution,
+      message: "Person created successfully",
+    });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

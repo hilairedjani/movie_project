@@ -3,25 +3,33 @@
  * This file contains custom middleware used in the app
  */
 
+const jwt = require("jsonwebtoken");
+
 /**
  * @description Access private routes
  */
 exports.authorize = async (req, res, next) => {
   try {
     // Check user attribute in request session
-    const user = req.session.user;
+    // const user = req.session.user;
 
-    if (!user) return res.status(401).send("Unauthorized");
+    // Obtain token from header
+    const token = await req.header("x-auth-token");
+
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+    // Decode token
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+
+    if (!decoded) return res.status(401).json({ message: "Unauthorized" });
 
     // Add user id to request object
-    req.user = user;
+    req.user = decoded.user;
 
     //Proceed to next middleware
     next();
   } catch (error) {
     console.error(error);
-    return res
-      .status(401)
-      .send("== An error occured::Could not authenticate user");
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };

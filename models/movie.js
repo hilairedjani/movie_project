@@ -10,51 +10,66 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
-const movieSchema = new Schema({
-  title: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  releaseYear: {
-    type: String,
-    required: true,
-  },
-  genre: [String],
-  runtime: {
-    type: String,
-  },
-  plot: {
-    type: String,
-  },
-  rating: {
-    type: String,
-  },
-  country: {
-    type: String,
-  },
-  image: {
-    type: String,
-  },
-  actors: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Person",
+const movieSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: [true, "Title is required"],
+      unique: true,
     },
-  ],
-  directors: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Person",
+    releaseYear: {
+      type: String,
+      required: [true, "Release Year is required"],
     },
-  ],
-  writers: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Person",
+    genre: [String],
+    runtime: {
+      type: String,
     },
-  ],
-});
+    plot: {
+      type: String,
+    },
+    rating: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+    totalReview: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+    actors: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Person",
+      },
+    ],
+    directors: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Person",
+      },
+    ],
+    writers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Person",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // Instance methods
 movieSchema.methods = {
@@ -101,6 +116,11 @@ movieSchema.statics = {
       .skip(parseInt(skip));
   },
 
+  // Find top popular movies
+  findPopular: async function ({ limit }) {
+    return this.find().limit(parseInt(limit)).sort({ totalReview: -1 });
+  },
+
   // Create a movie
   createMovie: async function ({
     title,
@@ -111,9 +131,6 @@ movieSchema.statics = {
     rating,
     country,
     image,
-    actors = [],
-    directors = [],
-    writers = [],
   }) {
     const movie = await new this({
       title,
@@ -124,9 +141,6 @@ movieSchema.statics = {
       rating,
       country,
       image,
-      actors,
-      directors,
-      writers,
     });
 
     await movie.save();

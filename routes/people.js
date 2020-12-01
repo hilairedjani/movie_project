@@ -10,7 +10,7 @@ const { getPeople, getPerson, createPerson } = require("../controllers/people");
 // == GET ROUTES
 
 /**
- * @route GET api/people
+ * @route GET /people
  * @description Get people
  * @access Public
  * Query params: name, rank
@@ -18,7 +18,7 @@ const { getPeople, getPerson, createPerson } = require("../controllers/people");
 router.get("/", getPeople);
 
 /**
- * @route GET api/people/:id
+ * @route GET /people/:_id
  * @description Get person by id
  * @access Public
  */
@@ -27,7 +27,7 @@ router.get("/:id", getPerson);
 // == POST ROUTES
 
 /**
- * @route POST api/people
+ * @route POST /people
  * @description Create/add a person
  * @access Private
  */
@@ -36,7 +36,7 @@ router.post("/", authorize, createPerson);
 // == PUT/PATCH ROUTES
 
 /**
- * @route PATCH api/people/:id
+ * @route PATCH /people/:id
  * @description Update a given movie
  * @access Private
  */
@@ -45,7 +45,7 @@ router.post("/", authorize, createPerson);
 // == DELETE ROUTES
 
 /**
- * @route DELETE api/people/:id
+ * @route DELETE /people/:id
  * @description Delete a given movie
  * @access Public
  */

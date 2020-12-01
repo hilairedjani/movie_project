@@ -3,9 +3,17 @@ const express = require("express");
 const router = express.Router();
 
 // Controller actions
-const { login, register } = require("../controllers/auth");
+const { login, register, getCurrentUser } = require("../controllers/auth");
+const { authorize } = require("../middleware");
 
 // == GET ROUTES
+
+/**
+ * @route GET api/auth/current
+ * @description Get current logged in user
+ * @access Private
+ */
+router.get("/current", authorize, getCurrentUser);
 
 // == POST ROUTES
 

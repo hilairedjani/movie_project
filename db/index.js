@@ -15,7 +15,7 @@ exports.connectDatabase = async () => {
 
     const { connection } = mongoose;
 
-    connection.on("open", (response) => {
+    connection.once("open", (response) => {
       console.log("== Database connected");
     });
 

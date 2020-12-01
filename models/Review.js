@@ -10,28 +10,33 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
-const reviewSchema = new Schema({
-  _user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: [true, "Review must have a user"],
+const reviewSchema = new Schema(
+  {
+    _user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Review must have a user"],
+    },
+    _movie: {
+      type: Schema.Types.ObjectId,
+      ref: "Movie",
+      required: [true, "Rating must have a movie"],
+    },
+    value: {
+      type: Number,
+      required: [true, "Review must have a value"],
+      min: [1, "Review value cannot be below 0"],
+      max: [5, "Review value cannot be above 5"],
+    },
+    reviewText: {
+      type: String,
+      trim: true,
+    },
   },
-  _movie: {
-    type: Schema.Types.ObjectId,
-    ref: "Movie",
-    required: [true, "Rating must have a movie"],
-  },
-  value: {
-    type: Number,
-    required: [true, "Review must have a value"],
-    min: [1, "Review value cannot be below 0"],
-    max: [5, "Review value cannot be above 5"],
-  },
-  reviewText: {
-    type: String,
-    trim: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Instance methods
 reviewSchema.methods = {};

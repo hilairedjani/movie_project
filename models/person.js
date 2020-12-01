@@ -11,20 +11,25 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
-const personSchema = new Schema({
-  rank: {
-    type: String,
-    enum: ["director", "actor", "writer"],
-    required: true,
+const personSchema = new Schema(
+  {
+    rank: {
+      type: String,
+      enum: ["director", "actor", "writer"],
+      required: true,
+    },
+    firstname: {
+      type: String,
+      required: true,
+    },
+    lastname: {
+      type: String,
+    },
   },
-  firstname: {
-    type: String,
-    required: true,
-  },
-  lastname: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Static methods
 personSchema.statics = {
@@ -81,20 +86,15 @@ personSchema.statics = {
   findByNameAndRank: async function ({ firstname = "", lastname = "", rank }) {
     if (lastname.length > 0 && firstname.length > 0)
       return await this.findOne({
-        $and: [
-          { rank: rank.toLowerCase() },
-          { $or: [{ firstname }, { lastname }] },
-        ],
+        firstname,
+        lastname,
+        rank: rank.toLowerCase(),
       });
 
     if (firstname.length > 0)
-      return await this.findOne({
-        $and: [{ rank: rank.toLowerCase() }, { firstname }],
-      });
+      return await this.findOne({ rank: rank.toLowerCase(), firstname });
 
-    return await this.findOne({
-      $and: [{ rank: rank.toLowerCase() }, { lastname }],
-    });
+    return await this.findOne({ rank: rank.toLowerCase(), lastname });
   },
 
   // Create a new person

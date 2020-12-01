@@ -31,11 +31,11 @@ router.get("/", getUsers);
 router.get("/profile", authorize, getProfile);
 
 /**
- * @route GET /users/:id
+ * @route GET /users/:_id
  * @description Get current user's
- * @access Public
+ * @access Private
  */
-router.get("/:id", getUser);
+router.get("/:_id", authorize, getUser);
 
 // == POST ROUTES
 
