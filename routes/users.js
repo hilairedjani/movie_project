@@ -11,6 +11,7 @@ const {
   getProfile,
   editUser,
   editProfile,
+  getCurrentProfile,
 } = require("../controllers/users");
 
 // == GET ROUTES
@@ -24,11 +25,18 @@ const {
 router.get("/", getUsers);
 
 /**
- * @route GET /users/profile
+ * @route GET /users/profile/current
  * @description Get current user's profile
  * @access Private
  */
-router.get("/profile", authorize, getProfile);
+router.get("/profile/current", authorize, getCurrentProfile);
+
+/**
+ * @route GET /users/profile/:_id
+ * @description Get a given user's profile
+ * @access Private
+ */
+router.get("/profile/:_id", authorize, getProfile);
 
 /**
  * @route GET /users/:_id

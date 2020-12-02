@@ -10,6 +10,9 @@ import {
   UPDATE_MOVIE_SUCCESS,
   MOVIES_LOADING,
   GET_MOVIES_ERROR,
+  CREATE_MOVIE_SUCCESS,
+  CREATE_MOVIE_FAIL,
+  SEARCH_MOVIES,
 } from "./index";
 
 /**
@@ -59,6 +62,29 @@ export const getMovies = (skip, limit) => async (dispatch) => {
 };
 
 /**
+ * @description Search Movies by name
+ */
+export const searchMovies = (title) => async (dispatch) => {
+  try {
+    // dispatch({ type: MOVIES_LOADING });
+
+    const response = await axios.get(`/movies?title=${title}&limit=${10}`);
+
+    dispatch({
+      type: SEARCH_MOVIES,
+      payload: response.data,
+    });
+  } catch (error) {
+    console.log(error);
+
+    //   dispatch({
+    //     type: GET_ERRORS,
+    //     payload: error.response.data
+    //   });
+  }
+};
+
+/**
  * @description Get movies based on popularity
  */
 export const getPopularMovies = () => async (dispatch) => {
@@ -78,5 +104,34 @@ export const getPopularMovies = () => async (dispatch) => {
     //     type: GET_ERRORS,
     //     payload: error.response.data
     //   });
+  }
+};
+
+// == POST ACTIONS
+
+/**
+ * @description Create a movie
+ */
+export const createMovie = (movieData, history) => async (dispatch) => {
+  try {
+    dispatch({ type: MOVIES_LOADING });
+
+    // API call to create a movie
+    const response = await axios.post("/movies", movieData);
+
+    dispatch({ type: CREATE_MOVIE_SUCCESS, payload: response.data });
+
+    history.push(`/movies/${response.data.movie._id}`);
+  } catch (error) {
+    console.log(error);
+
+    dispatch({
+      type: GET_MOVIES_ERROR,
+      payload: error.response.data.message,
+    });
+
+    dispatch({
+      type: CREATE_MOVIE_FAIL,
+    });
   }
 };

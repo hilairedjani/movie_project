@@ -1,9 +1,10 @@
 import {
   GET_MOVIE,
   GET_MOVIES,
+  SEARCH_MOVIES,
   GET_POPULAR_MOVIES,
-  POST_MOVIE_FAIL,
-  POST_MOVIE_SUCCESS,
+  CREATE_MOVIE_FAIL,
+  CREATE_MOVIE_SUCCESS,
   UPDATE_MOVIE_FAIL,
   UPDATE_MOVIE_SUCCESS,
   MOVIES_LOADING,
@@ -14,6 +15,7 @@ let initialState = {
   movie: null,
   movies: [],
   popularMovies: [],
+  searchedMovies: [],
   loadMore: false,
   success: false,
   loading: false,
@@ -50,12 +52,41 @@ const moviesReducer = (state = initialState, { type, payload, skip = 0 }) => {
         loadMore: payload.length > 0 ? true : false,
       };
 
+    case SEARCH_MOVIES:
+      return {
+        ...state,
+        loading: false,
+        message: "",
+        success: true,
+        error: "",
+        searchedMovies: payload,
+      };
+
     case GET_POPULAR_MOVIES:
       return {
         ...state,
         loading: false,
         message: "",
         popularMovies: payload,
+      };
+
+    case CREATE_MOVIE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: payload.message,
+        movie: payload.movie,
+        error: "",
+      };
+
+    case CREATE_MOVIE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        message: "",
+        error: payload,
       };
 
     case GET_MOVIES_ERROR:

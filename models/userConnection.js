@@ -43,6 +43,14 @@ userConnectionSchema.statics = {
 
     return contribution;
   },
+
+  // Delete a given connection
+  deleteConnection: async function ({ _id, _follower, _following }, {}) {
+    if (_id) return this.findByIdAndDelete(_id);
+    if (_follower && _following)
+      return this.findOneAndDelete({ _follower, _following });
+    return null;
+  },
 };
 
 module.exports = model("UserConnnection", userConnectionSchema);

@@ -52,3 +52,6 @@ export const removeStorageItem = async (key) => {
     return false;
   }
 };
+
+export const isFollowingPerson = (personId, people) =>
+  people.includes(personId);

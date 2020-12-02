@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getMovie } from "../../app_actions/movies";
 
 const Movie = () => {
@@ -53,7 +54,29 @@ const Movie = () => {
                 <div className="col-6">
                   <h4 className="text-muted">{movie.title}</h4>
                   <hr />
-                  <p>{movie.plot}</p>
+
+                  <div className="row">
+                    <div className="col-4 font-weight-bold">Realease Year</div>
+                    <div className="col">{movie.releaseYear}</div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-4 font-weight-bold">Rated</div>
+                    <div className="col">{movie.rating}</div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col-4 font-weight-bold">Runtime</div>
+                    <div className="col">{movie.runtime}</div>
+                  </div>
+
+                  <div className="row">
+                    <div className="col pt-3">
+                      <h5 className="text-muted">Plot</h5>
+                      <hr />
+                      <p>{movie.plot}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -84,22 +107,23 @@ const Movie = () => {
         </div>
 
         <div className="col-4">
-          <h5>Related Movies</h5>
+          <h5 className="text-white">Related Movies</h5>
           <div
             style={{
-              overflowX: "scroll",
               display: "flex",
               flexDirection: "row",
             }}
           >
             {movie.relatedMovies.map((rmovie) => (
-              <div className="card card-body p-0 m-1">
-                <img
-                  src={rmovie.image}
-                  alt={rmovie.title}
-                  className="card-img h-100"
-                />
-              </div>
+              <Link key={rmovie._id} to={`/movies/${rmovie._id}`}>
+                <div className="card card-body p-0 m-1">
+                  <img
+                    src={rmovie.image}
+                    alt={rmovie.title}
+                    className="card-img h-100"
+                  />
+                </div>
+              </Link>
             ))}
           </div>
           <hr />

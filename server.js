@@ -3,9 +3,10 @@ const http = require("http");
 const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
-const socketIO = require("socket.io");
+const socketIo = require("socket.io");
 
 const { connectDatabase } = require("./db");
+const socket = require("./middleware/socket");
 
 const Movie = require("./models/movie");
 
@@ -17,16 +18,16 @@ dotenv.config();
 
 // Create app server and connect to socket
 const server = http.createServer(app);
-const io = socketIO(server);
+socket.connect(server);
 
 const PORT = process.env.PORT || 5000;
 
 // Set view engine::Pug
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "client/src"));
+// app.set("view engine", "pug");
+// app.set("views", path.join(__dirname, "client/src"));
 
 // Serve static files
-app.use(express.static("client"));
+// app.use(express.static("client"));
 
 // Apply app middleware
 app.use(express.json({ extended: false }));
@@ -56,6 +57,7 @@ app.use("/people", require("./routes/people"));
 app.use("/users", require("./routes/users"));
 app.use("/reviews", require("./routes/reviews"));
 app.use("/contributions", require("./routes/contributions"));
+app.use("/peopleConnections", require("./routes/peopleConnections"));
 
 // app.get("/", async (req, res) => {
 //   const movies = await Movie.findAll({ limit: 25, skip: 0 });
@@ -80,10 +82,5 @@ app.use("/contributions", require("./routes/contributions"));
 // Connect database
 connectDatabase();
 
-// Start socket
-io.on("connect", (socket) => {
-  console.log("== Connected");
-});
-
 // Start server
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+server.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

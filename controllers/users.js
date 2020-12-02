@@ -2,6 +2,9 @@
 
 const User = require("../models/user");
 const Contribution = require("../models/contribution");
+const PersonConnection = require("../models/personConnection");
+
+const socket = require("../middleware/socket");
 
 /**
  * @description Fetch all users::First 10 users by default
@@ -54,11 +57,44 @@ exports.getUser = async (req, res) => {
 /**
  * @description Get current logged in user's profile
  */
+exports.getCurrentProfile = async (req, res) => {
+  try {
+    const _id = req.user;
+
+    const profile = await User.findById(_id).lean();
+
+    if (!profile) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Fetch user contributions
+    profile.contributions = await Contribution.find({
+      _user: profile._id,
+    }).populate("_item", ["title", "firstname", "lastname", "rank"]);
+
+    // Fetch people following
+    profile.people = await PersonConnection.distinct("_person", {
+      _user: profile._id,
+    });
+
+    // TODO::Fetch followers and following
+
+    return res.json(profile);
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
+
+/**
+ * @description Get a given user's profile
+ */
 exports.getProfile = async (req, res) => {
   try {
-    const id = req.user;
+    const _id = req.params._id;
 
-    const profile = await User.findById(id).lean();
+    const profile = await User.findById(_id).lean();
 
     if (!profile) {
       return res.status(404).json({ message: "User not found" });

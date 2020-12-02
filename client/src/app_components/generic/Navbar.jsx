@@ -21,6 +21,10 @@ const Navbar = () => {
 
   const authLinks = (
     <div className="col-auto mt-auto">
+      <Link to={`/people`} className="font-weight-bold h6 text-muted">
+        <i className="fas fa-users"></i> People
+      </Link>
+      <span className="text-muted"> | </span>
       <Link to={`/profile`} className="font-weight-bold h6 text-muted">
         <i className="fas fa-user-circle"></i> My Profile
       </Link>

@@ -4,10 +4,11 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { getProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
+import PeopleConnections from "../peopleConnections/PeopleConnections";
 import EditProfileModal from "./EditProfileModal";
 
 function MyProfile() {
-  const { profile, loading } = useSelector((state) => state.users);
+  const { currentProfile, loading } = useSelector((state) => state.users);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -16,11 +17,11 @@ function MyProfile() {
     return () => {};
   }, []);
 
-  if (!loading && !profile) {
+  if (!loading && !currentProfile) {
     return <h2>Profile not found</h2>;
   }
 
-  if (loading && !profile) {
+  if (loading && !currentProfile) {
     return <h2>Loading...</h2>;
   }
 
@@ -32,27 +33,27 @@ function MyProfile() {
             <div className="col-sm-3">
               <div className="card card-body text-center pb-2 px-2">
                 <i className="fas fa-user-circle fa-5x"></i>
-                <h3>{profile.username}</h3>
+                <h3>{currentProfile.username}</h3>
                 <h6>
-                  {profile.firstname} {profile.lastname}
+                  {currentProfile.firstname} {currentProfile.lastname}
                 </h6>
-                <h6>{profile.email}</h6>
+                <h6>{currentProfile.email}</h6>
 
                 <h5>
-                  {profile.role === "contributor" ? (
+                  {currentProfile.role === "contributor" ? (
                     <span className="badge badge-pill badge-success p-2">
                       <i className="fas fa-clipboard"></i>&nbsp;&nbsp;
-                      {profile.role}
+                      {currentProfile.role}
                     </span>
                   ) : (
                     <span className="badge badge-pill badge-secondary p-2">
                       <i className="fas fa-clipboard"></i>&nbsp;&nbsp;
-                      {profile.role}
+                      {currentProfile.role}
                     </span>
                   )}
                 </h5>
 
-                {profile._id == user._id && (
+                {currentProfile._id == user._id && (
                   <div className="text-right">
                     <button
                       type="button"
@@ -71,17 +72,19 @@ function MyProfile() {
             <div className="col">
               <nav>
                 <div className="nav nav-tabs" role="tablist">
-                  <a
-                    className="nav-item nav-link active"
-                    role="tab"
-                    href="#contributions-tab-pane"
-                    id="contributions-nav-tab"
-                    data-toggle="tab"
-                    aria-controls="contributions-tab-pane"
-                    aria-selected="true"
-                  >
-                    Contributions
-                  </a>
+                  {user.role == "contributor" && (
+                    <a
+                      className="nav-item nav-link active"
+                      role="tab"
+                      href="#contributions-tab-pane"
+                      id="contributions-nav-tab"
+                      data-toggle="tab"
+                      aria-controls="contributions-tab-pane"
+                      aria-selected="true"
+                    >
+                      Contributions
+                    </a>
+                  )}
 
                   <a
                     className="nav-link nav-item"
@@ -122,20 +125,24 @@ function MyProfile() {
               </nav>
 
               <div className="tab-content card card-body my-1">
-                <div
-                  className="tab-pane fade show active"
-                  id="contributions-tab-pane"
-                  role="tabpanel"
-                >
-                  <Contributions _user={user._id}></Contributions>
-                </div>
+                {user.role == "contributor" && (
+                  <div
+                    className="tab-pane fade show active"
+                    id="contributions-tab-pane"
+                    role="tabpanel"
+                  >
+                    <Contributions _user={currentProfile._id}></Contributions>
+                  </div>
+                )}
 
                 <div
-                  className="tab-pane fade"
+                  className={`tab-pane fade ${
+                    user.role == "user" ? "show active" : ""
+                  }`}
                   id="followers-tab-pane"
                   role="tabpanel"
                 >
-                  Foll...
+                  Followers
                 </div>
 
                 <div
@@ -151,14 +158,14 @@ function MyProfile() {
                   id="people-tab-pane"
                   role="tabpanel"
                 >
-                  People
+                  <PeopleConnections _user={currentProfile._id} />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>{" "}
-      {profile._id == user._id && <EditProfileModal></EditProfileModal>}
+      </div>
+      <EditProfileModal></EditProfileModal>
     </Fragment>
   );
 }

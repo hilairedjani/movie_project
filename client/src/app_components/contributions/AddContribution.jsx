@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import AddMovieForm from "../movies/AddMovieForm";
 import AddPersonForm from "../people/AddPersonForm";
 
@@ -61,8 +61,22 @@ const AddContribution = () => {
           <hr />
           <div className="row">
             <div className="col">
-              {showMovieForm && <AddMovieForm></AddMovieForm>}
-              {showPersonForm && <AddPersonForm></AddPersonForm>}
+              {showMovieForm && (
+                <Fragment>
+                  <h4>
+                    <i className="fas fa-film"></i> Add a Movie
+                  </h4>
+                  <AddMovieForm></AddMovieForm>
+                </Fragment>
+              )}
+              {showPersonForm && (
+                <Fragment>
+                  <h4>
+                    <i className="fas fa-user"></i> Add a Person
+                  </h4>
+                  <AddPersonForm></AddPersonForm>
+                </Fragment>
+              )}
             </div>
           </div>
         </div>

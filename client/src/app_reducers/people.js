@@ -4,7 +4,11 @@ import {
   CREATE_PERSON_FAIL,
   CREATE_PERSON_SUCCESS,
   PEOPLE_LOADING,
+  FOLLOW_PERSON_SUCCESS,
+  FOLLOW_PERSON_FAIL,
   GET_PEOPLE_ERROR,
+  UNFOLLOW_PERSON_SUCCESS,
+  UNFOLLOW_PERSON_FAIL,
 } from "../app_actions";
 
 let initialState = {
@@ -62,6 +66,43 @@ const peopleReducer = (state = initialState, { type, payload, skip = 0 }) => {
         loading: false,
         success: false,
         message: "",
+        error: payload,
+      };
+
+    case FOLLOW_PERSON_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: payload.message,
+        error: "",
+      };
+
+    case FOLLOW_PERSON_FAIL:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        message: "",
+        error: payload,
+      };
+
+    case UNFOLLOW_PERSON_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: payload.message,
+        error: "",
+      };
+
+    case UNFOLLOW_PERSON_FAIL:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        message: "",
+        error: payload,
       };
 
     case GET_PEOPLE_ERROR:

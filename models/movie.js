@@ -97,6 +97,15 @@ movieSchema.statics = {
     return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
   },
 
+  // Find movies whose name matches strng
+  findAllByTitle: async function (title, { skip = 0, limit = 10 }) {
+    const searchRegex = new RegExp(title);
+
+    return await this.find({ title: { $regex: searchRegex, $options: "i" } })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
+
   // Find movies based on genre
   findAllByGenre: async function (
     genre,

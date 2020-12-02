@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { useDispatch } from "react-redux";
-import { createPerson } from "../../app_actions/people";
+import { useHistory } from "react-router-dom";
+import { createMovie } from "../../app_actions/movies";
 
 const initialState = {
   title: "",
@@ -31,6 +32,7 @@ const AddMovieForm = () => {
   } = formData;
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onChange = (event) =>
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -60,8 +62,8 @@ const AddMovieForm = () => {
       country,
       image,
     };
-    console.log(movieData);
-    // await dispatch(createPerson(movieData));
+
+    await dispatch(createMovie(movieData, history));
   };
   return (
     <Fragment>
@@ -69,7 +71,7 @@ const AddMovieForm = () => {
         <div className="row">
           <div className="col-12">
             <div className="form-group">
-              <label htmlFor="firstname">Title</label>
+              <label htmlFor="title">Title</label>
               <input
                 className="form-control app-input"
                 type="text"
@@ -78,6 +80,86 @@ const AddMovieForm = () => {
                 onChange={onChange}
                 required
               />
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="form-group">
+              <label htmlFor="releaseYear">Release Year</label>
+              <input
+                className="form-control app-input"
+                type="text"
+                name="releaseYear"
+                value={releaseYear}
+                onChange={onChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="form-group">
+              <label htmlFor="runtime">Run Time</label>
+              <input
+                className="form-control app-input"
+                type="text"
+                name="runtime"
+                value={runtime}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="form-group">
+              <label htmlFor="rating">Rating</label>
+              <input
+                className="form-control app-input"
+                type="text"
+                name="rating"
+                value={rating}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="form-group">
+              <label htmlFor="country">Country</label>
+              <input
+                className="form-control app-input"
+                type="text"
+                name="country"
+                value={country}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="form-group">
+              <label htmlFor="image">Image URL</label>
+              <input
+                className="form-control app-input"
+                type="text"
+                name="image"
+                value={image}
+                onChange={onChange}
+              />
+            </div>
+          </div>
+
+          <div className="col-12">
+            <div className="form-group">
+              <label htmlFor="plot">Plot</label>
+              <textarea
+                className="form-control app-input"
+                id="plot"
+                rows="3"
+                name="plot"
+                value={plot}
+                onChange={onChange}
+              ></textarea>
             </div>
           </div>
         </div>

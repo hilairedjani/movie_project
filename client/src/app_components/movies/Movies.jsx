@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { getMovies } from "../../app_actions/movies";
+import MovieSearchBar from "./MovieSearchBar";
 
 const Movies = () => {
   const { movies } = useSelector((state) => state.movies);
@@ -16,7 +17,8 @@ const Movies = () => {
   return (
     <div className="row">
       <div className="col-md-8 offset-md-2">
-        <div className="card-columns">
+        <MovieSearchBar></MovieSearchBar>
+        <div className="card-columns pt-2">
           {movies.map((movie) => {
             return (
               <div className="card" key={movie._id}>

@@ -34,16 +34,23 @@ personConnectionSchema.methods = {};
 // Static methods
 personConnectionSchema.statics = {
   // Create a new connection
-  createConnection: async function ({ _user, _person }) {
-    const contribution = await new this({
+  createConnection: async function (_user, _person) {
+    const connection = await new this({
       _user,
       _person,
     });
 
-    await contribution.save();
+    await connection.save();
 
-    return contribution;
+    return connection;
+  },
+
+  // Delete a given connection
+  deleteConnection: async function ({ _id, _user, _person }, options) {
+    if (_id) return this.findByIdAndDelete(_id);
+    if (_user && _person) return this.findOneAndDelete({ _user, _person });
+    return null;
   },
 };
 
-module.exports = model("PersonConnnection", personConnectionSchema);
+module.exports = model("PersonConnection", personConnectionSchema);

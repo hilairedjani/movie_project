@@ -24,7 +24,7 @@ exports.getPeople = async (req, res) => {
       people = await Person.findAll({ skip, limit });
     }
 
-    return res.json(peopleArr);
+    return res.json(people);
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
