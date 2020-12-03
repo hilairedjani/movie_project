@@ -6,6 +6,7 @@ import {
   UPDATE_PROFILE_SUCCESS,
   FOLLOW_PERSON_SUCCESS,
   FOLLOW_USER_SUCCESS,
+  UNFOLLOW_USER_SUCCESS,
   GET_PROFILE_ERROR,
   PROFILES_LOADING,
   UNFOLLOW_PERSON_SUCCESS,
@@ -103,6 +104,37 @@ const userReducer = (state = initialState, { type, payload, skip = 0 }) => {
           ...state.currentProfile,
           people: state.currentProfile.people.filter(
             (person) => person !== payload.connection._person
+          ),
+        },
+        message: "",
+      };
+
+    case FOLLOW_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: "",
+        currentProfile: {
+          ...state.currentProfile,
+          following: [
+            ...state.currentProfile.following,
+            payload.connection._following,
+          ],
+        },
+        message: "",
+      };
+
+    case UNFOLLOW_USER_SUCCESS:
+      return {
+        ...state,
+        error: "",
+        loading: false,
+        success: true,
+        currentProfile: {
+          ...state.currentProfile,
+          following: state.currentProfile.following.filter(
+            (profile) => profile !== payload.connection._following
           ),
         },
         message: "",

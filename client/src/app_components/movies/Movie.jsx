@@ -3,8 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { getMovie } from "../../app_actions/movies";
+import AddReviewModal from "../reviews/AddReviewModal";
+import ReviewForm from "../reviews/ReviewForm";
 
 const Movie = () => {
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const { _id } = useParams();
   const { movie, loading } = useSelector((state) => state.movies);
   const dispatch = useDispatch();
@@ -101,12 +104,40 @@ const Movie = () => {
           </div>
         </div>
 
-        <div className="col-3">
+        <div className="col-4">
           <h5>Reviews</h5>
           <hr />
+
+          <div className="row">
+            <div className="col">
+              <button
+                className="btn btn-primary btn-sm float-right"
+                type="button"
+                data-toggle="modal"
+                data-target="#add-review-modal"
+              >
+                Add review
+              </button>
+            </div>
+          </div>
+
+          <hr />
+
+          <AddReviewModal></AddReviewModal>
+
+          <div className="row">
+            <div className="col">
+              {movie.reviews.map((review) => (
+                <div className="card card-body text-danger" key={review._id}>
+                  {review._id}
+                  <hr />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="col-4">
+        <div className="col-3">
           <h5 className="text-white">Related Movies</h5>
           <div
             style={{

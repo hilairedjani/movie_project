@@ -2,8 +2,6 @@
 
 /**
  * == PERSON CONNECTION SCHEMA
- * type
- * item
  */
 
 const mongoose = require("mongoose");

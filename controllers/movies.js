@@ -3,6 +3,7 @@
 const Movie = require("../models/movie");
 const Person = require("../models/person");
 const Contribution = require("../models/contribution");
+const Review = require("../models/review");
 
 const mongoose = require("mongoose");
 
@@ -82,11 +83,14 @@ exports.getMovieById = async (req, res) => {
 
     const relatedMovies = await Movie.findAllByGenre(movie.genre, {
       skip: 0,
-      limit: 4,
-      exlude: [movie._id],
+      limit: 3,
+      exclude: [movie._id],
     });
 
-    return res.json({ ...movie, relatedMovies: relatedMovies });
+    // Find movie reviews
+    const reviews = await Review.find({ _movie: movie._id });
+
+    return res.json({ ...movie, relatedMovies, reviews });
 
     // return res.format({
     //   "application/json": function () {

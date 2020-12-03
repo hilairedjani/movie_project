@@ -1,29 +1,28 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  followPerson,
-  unfollowPerson,
-} from "../../app_actions/peopleConnections";
-import { isFollowingPerson } from "../../app_helpers";
+import { followUser, unfollowUser } from "../../app_actions/usersConnections";
+import { isFollowingUser } from "../../app_helpers";
 
-const PersonItem = ({ person }) => {
+const ProfileItem = ({ profile }) => {
   const { currentProfile } = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
-  const handleFollowClick = () => dispatch(followPerson(person._id));
+  const handleFollowClick = () => dispatch(followUser(profile._id));
 
-  const handleUnfollowClick = () => dispatch(unfollowPerson(person._id));
+  const handleUnfollowClick = () => dispatch(unfollowUser(profile._id));
 
   return (
     <div className="card card-body text-center">
       <i className="fas fa-user-circle fa-5x"></i>
       <br />
-      <h6 className="mb-0">
-        {person.firstname} {person.lastname}
-      </h6>
 
-      <p className="text-muted">{person.rank}</p>
-      {isFollowingPerson(person._id, currentProfile.people) ? (
+      <h6 className="mb-0">{profile.username}</h6>
+      <p className="mb-0">
+        {profile.firstname} {profile.lastname}
+      </p>
+
+      <p className="text-muted">{profile.role}</p>
+      {isFollowingUser(profile._id, currentProfile.following) ? (
         <button
           type="button"
           onClick={handleUnfollowClick}
@@ -44,4 +43,4 @@ const PersonItem = ({ person }) => {
   );
 };
 
-export default PersonItem;
+export default ProfileItem;

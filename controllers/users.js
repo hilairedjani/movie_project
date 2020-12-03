@@ -3,8 +3,10 @@
 const User = require("../models/user");
 const Contribution = require("../models/contribution");
 const PersonConnection = require("../models/personConnection");
+const UserConnection = require("../models/userConnection");
 
 const socket = require("../middleware/socket");
+const user = require("../models/user");
 
 /**
  * @description Fetch all users::First 10 users by default
@@ -15,17 +17,25 @@ exports.getUsers = async (req, res) => {
     let limit = parseInt(req.query.limit) || 10;
 
     //   Return all users
-    let usersArr = [];
+    let users = [];
 
     if (req.query.name) {
-      usersArr = await User.findAllByName(req.query.name, { skip, limit });
+      users = await User.findAllByName(req.query.name, {
+        skip,
+        limit,
+        exclude: [req.user],
+      });
     } else if (req.query.role) {
-      usersArr = await User.findAllRole(req.query.role, { skip, limit });
+      users = await User.findAllRole(req.query.role, {
+        skip,
+        limit,
+        exclude: [req.user],
+      });
     } else {
-      usersArr = await User.findAll({ skip, limit });
+      users = await User.findAll({ skip, limit });
     }
 
-    return res.json(usersArr);
+    return res.json(users);
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -77,7 +87,14 @@ exports.getCurrentProfile = async (req, res) => {
       _user: profile._id,
     });
 
-    // TODO::Fetch followers and following
+    // Fetch followers and following
+    profile.followers = await UserConnection.distinct("_follower", {
+      _following: profile._id,
+    });
+
+    profile.following = await UserConnection.distinct("_following", {
+      _follower: profile._id,
+    });
 
     return res.json(profile);
   } catch (error) {

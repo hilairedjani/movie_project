@@ -11,7 +11,7 @@ exports.getConnectionsForUser = async (req, res) => {
       _user,
     }).populate("_person");
 
-    return res.json(connections);
+    return res.json({ connections });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

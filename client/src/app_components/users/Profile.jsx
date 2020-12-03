@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { useParams, Link } from "react-router-dom";
 import { getProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
 import EditProfileModal from "./EditProfileModal";

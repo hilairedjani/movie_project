@@ -18,7 +18,7 @@ const userConnectionSchema = new Schema(
     },
     _following: {
       type: Schema.Types.ObjectId,
-      ref: "Person",
+      ref: "User",
       required: true,
     },
   },
@@ -33,7 +33,7 @@ userConnectionSchema.methods = {};
 // Static methods
 userConnectionSchema.statics = {
   // Create a new connection
-  createConnection: async function ({ _follower, _following }) {
+  follow: async function ({ _follower, _following }) {
     const contribution = await new this({
       _follower,
       _following,
@@ -45,7 +45,7 @@ userConnectionSchema.statics = {
   },
 
   // Delete a given connection
-  deleteConnection: async function ({ _id, _follower, _following }, {}) {
+  unfollow: async function ({ _id, _follower, _following }, options) {
     if (_id) return this.findByIdAndDelete(_id);
     if (_follower && _following)
       return this.findOneAndDelete({ _follower, _following });

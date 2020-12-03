@@ -5,6 +5,8 @@ import { default as movies } from "./movies";
 import { default as users } from "./users";
 import { default as contributions } from "./contributions";
 import { default as people } from "./people";
+import { default as usersConnections } from "./usersConnections";
+import { default as peopleConnections } from "./peopleConnections";
 
 export default combineReducers({
   auth,
@@ -12,4 +14,6 @@ export default combineReducers({
   users,
   contributions,
   people,
+  usersConnections,
+  peopleConnections,
 });

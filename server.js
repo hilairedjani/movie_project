@@ -58,6 +58,7 @@ app.use("/users", require("./routes/users"));
 app.use("/reviews", require("./routes/reviews"));
 app.use("/contributions", require("./routes/contributions"));
 app.use("/peopleConnections", require("./routes/peopleConnections"));
+app.use("/usersConnections", require("./routes/usersConnections"));
 
 // app.get("/", async (req, res) => {
 //   const movies = await Movie.findAll({ limit: 25, skip: 0 });

@@ -1,6 +1,7 @@
 // == PEOPLE CONTROLLER
 
 const Review = require("../models/review");
+const Movie = require("../models/movie");
 
 /**
  * @description Fetch all reviews::First 10 reviews by default
@@ -112,23 +113,41 @@ exports.getReview = async (req, res) => {
  */
 exports.createReview = async (req, res) => {
   try {
-    let { value, reviewText } = req.body;
+    let { value, briefSummary, fullText } = req.body;
 
     const reviewFields = {};
-    if (value) reviewFields.value = parseInt(value.trim());
-    if (reviewText) reviewFields.reviewText = reviewText.trim();
+    if (value) reviewFields.value = parseInt(value);
+    if (briefSummary) reviewFields.briefSummary = briefSummary.trim();
+    if (fullText) reviewFields.fullText = fullText.trim();
+
+    const _movie = req.params._movie;
+    const _user = req.user;
+
+    // Find movie
+    const movie = await Movie.findById(_movie);
+
+    if (!movie) return res.status(404).json({ message: "Movie not found" });
+
+    // Check if user has already reviewed movie
+    const hasReviewed = await Review.findOne({ _movie: movie._id, _user });
+
+    if (hasReviewed)
+      return res
+        .status(400)
+        .json({ message: "You have already reviewed this movie" });
 
     //   Create review
-    const review = await Review.createReview(
-      req.user,
-      req.params._movie,
-      reviewFields
-    );
+    const review = await Review.createReview(_user, movie._id, reviewFields);
 
     if (!review)
-      return res.status(404).json({ message: "Could not find review" });
+      return res.status(400).json({ message: "Could not create review" });
 
-    return res.json(review);
+    // Increment movie review total and review count
+    await movie.incrementTotalReview(value);
+    await movie.incrementReviewCount();
+    await movie.save();
+
+    return res.json({ review, message: "Review added successfully", movie });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

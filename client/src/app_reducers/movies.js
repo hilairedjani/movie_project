@@ -9,6 +9,7 @@ import {
   UPDATE_MOVIE_SUCCESS,
   MOVIES_LOADING,
   GET_MOVIES_ERROR,
+  CREATE_REVIEW_SUCCESS,
 } from "../app_actions";
 
 let initialState = {
@@ -103,6 +104,25 @@ const moviesReducer = (state = initialState, { type, payload, skip = 0 }) => {
         ...state,
         loading: true,
         message: "",
+      };
+
+    case CREATE_REVIEW_SUCCESS:
+      let reviews = [...state.movie.reviews];
+
+      if (state.movie._id == payload.review._movie) {
+        reviews.unshift(payload.review);
+      }
+
+      return {
+        ...state,
+        loading: false,
+        message: "",
+        error: "",
+        success: false,
+        movie: {
+          ...state.movie,
+          reviews: reviews,
+        },
       };
     default:
       return { ...state };

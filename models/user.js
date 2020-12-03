@@ -63,8 +63,11 @@ const userSchema = new Schema(
 // Static methods
 userSchema.statics = {
   // Find all users
-  findAll: async function ({ limit = 10, skip = 0 }) {
-    return await this.find().limit(parseInt(limit)).skip(parseInt(skip));
+  findAll: async function ({ limit = 10, skip = 0, exclude = [] }) {
+    console.log(exclude);
+    return await this.find({ _id: { $nin: exclude } })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
   },
 
   // Find users based on name

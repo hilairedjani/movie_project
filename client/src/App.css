@@ -20,7 +20,7 @@ a {
   background: #fff none repeat scroll 0% 0%;
   box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
   margin-bottom: 10px;
-  border-radius: 12.5px;
+  border-radius: 2.5px;
   border: 0 solid #e2e8f0;
 }
 
@@ -50,4 +50,12 @@ label {
 .app-input:hover {
   box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
   border: 1px solid grey;
+}
+
+.review-star {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+.review-star-active {
+  color: gold;
 }

@@ -25,10 +25,15 @@ const reviewSchema = new Schema(
     value: {
       type: Number,
       required: [true, "Review must have a value"],
-      min: [1, "Review value cannot be below 0"],
-      max: [5, "Review value cannot be above 5"],
+      min: [1, "Review value cannot be below 1"],
+      max: [10, "Review value cannot be above 10"],
     },
-    reviewText: {
+    briefSummary: {
+      type: String,
+      maxlength: [150, "Summary should not be more than 150 characters"],
+      trim: true,
+    },
+    fullText: {
       type: String,
       trim: true,
     },

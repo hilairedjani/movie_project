@@ -92,7 +92,7 @@ export const getPopularMovies = () => async (dispatch) => {
     dispatch({ type: MOVIES_LOADING });
 
     const response = await axios.get(`/movies/popular`);
-    console.log(response.data);
+
     dispatch({
       type: GET_POPULAR_MOVIES,
       payload: response.data,

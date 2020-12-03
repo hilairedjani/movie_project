@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { getProfile } from "../../app_actions/users";
+import { useParams, Link } from "react-router-dom";
+import { getProfile, getCurrentProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
 import PeopleConnections from "../peopleConnections/PeopleConnections";
 import EditProfileModal from "./EditProfileModal";
+import Followers from "./Followers";
+import Followings from "./Folowings";
 
 function MyProfile() {
   const { currentProfile, loading } = useSelector((state) => state.users);
@@ -13,7 +14,7 @@ function MyProfile() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getProfile(user._id));
+    dispatch(getCurrentProfile());
     return () => {};
   }, []);
 
@@ -124,7 +125,7 @@ function MyProfile() {
                 </div>
               </nav>
 
-              <div className="tab-content card card-body my-1">
+              <div className="tab-content my-1">
                 {user.role == "contributor" && (
                   <div
                     className="tab-pane fade show active"
@@ -142,7 +143,7 @@ function MyProfile() {
                   id="followers-tab-pane"
                   role="tabpanel"
                 >
-                  Followers
+                  <Followers _user={currentProfile._id}></Followers>
                 </div>
 
                 <div
@@ -150,7 +151,7 @@ function MyProfile() {
                   id="following-tab-pane"
                   role="tabpanel"
                 >
-                  Following
+                  <Followings _user={currentProfile._id}></Followings>
                 </div>
 
                 <div

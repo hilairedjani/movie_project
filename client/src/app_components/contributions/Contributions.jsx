@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { useParams, Link } from "react-router-dom";
 import { getUserContributions } from "../../app_actions/contributions";
 
 const Contributions = ({ _user }) => {
@@ -13,7 +12,7 @@ const Contributions = ({ _user }) => {
     // Fetch user contributions
     dispatch(getUserContributions(_user));
     return () => {};
-  }, []);
+  }, [_user]);
 
   if (loading) return <h3>Loading...</h3>;
 

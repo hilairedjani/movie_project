@@ -55,11 +55,11 @@ router.get("/:id", getReview);
 // == POST ROUTES
 
 /**
- * @route POST /reviews/movie/:_movie/user/:_user
+ * @route POST /reviews/movie/:_movie
  * @description Create/add a review for a movie
  * @access Private
  */
-router.post("/movie/:_movie/user/:_user", authorize, createReview);
+router.post("/_movie/:_movie", authorize, createReview);
 
 // == PUT/PATCH ROUTES
 

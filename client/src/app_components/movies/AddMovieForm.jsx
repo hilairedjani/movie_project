@@ -155,7 +155,7 @@ const AddMovieForm = () => {
               <textarea
                 className="form-control app-input"
                 id="plot"
-                rows="3"
+                rows={3}
                 name="plot"
                 value={plot}
                 onChange={onChange}

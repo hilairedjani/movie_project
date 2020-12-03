@@ -88,6 +88,18 @@ movieSchema.methods = {
     await this.writers.push(writerId);
     return;
   },
+
+  // increment total review
+  incrementTotalReview: async function (value) {
+    this.totalReview += value;
+    return;
+  },
+
+  // increment review count
+  incrementReviewCount: async function () {
+    this.reviewCount++;
+    return;
+  },
 };
 
 // Static methods
@@ -109,11 +121,11 @@ movieSchema.statics = {
   // Find movies based on genre
   findAllByGenre: async function (
     genre,
-    { skip = 0, limit = 10, exlude = [] }
+    { skip = 0, limit = 10, exclude = [] }
   ) {
     // let re = new RegExp(genre, "i");
 
-    return await this.find({ genre: { $in: genre }, _id: { $nin: exlude } })
+    return await this.find({ genre: { $in: genre }, _id: { $nin: exclude } })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
   },
