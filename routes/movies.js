@@ -13,6 +13,7 @@ const {
   addActor,
   addDirector,
   addWriter,
+  scraper,
   deleteMovie,
 } = require("../controllers/movies");
 
@@ -38,7 +39,7 @@ router.get("/:id", authorize, getMovieById);
  * @description Scrape movie by title
  * @access Public
  */
-router.get("/scraper:title", authorize, scraper);
+router.get("/scraper/title/:title", scraper);
 
 // == POST ROUTES
 

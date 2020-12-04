@@ -2,7 +2,7 @@
 
 const Movie = require("../models/movie");
 const Person = require("../models/person");
-
+const { fetchmoviefromapi } = require("../helpers");
 let movies = require("../db/movies.json");
 
 /**
@@ -285,11 +285,11 @@ exports.deleteMovie = async (req, res) => {
  */
 exports.scraper = async (req, res) => {
   const movie = await fetchmoviefromapi(req.params.title);
-
+  console.log(req.params.title);
   let movieObject = {};
   movieObject.title = movie.Title;
   movieObject.releaseYear = movie.Year;
-  movieObject.genre = movie.Genre.split(", ");
+  //movieObject.genre = movie.Genre.split(", ");
   movieObject.runtime = movie.Runtime;
   movieObject.plot = movie.Plot;
   movieObject.rating = movie.Rated;
