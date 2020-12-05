@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { getMovie } from "../../app_actions/movies";
 import AddReviewModal from "../reviews/AddReviewModal";
 import ReviewForm from "../reviews/ReviewForm";
+import ReviewItem from "../reviews/ReviewItem";
+import ReviewModal from "../reviews/ReviewModal";
 
 const Movie = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
@@ -42,7 +44,7 @@ const Movie = () => {
                 "linear-gradient(to right, rgba(11.76%, 18.43%, 23.53%, 1.00) 150px, rgba(18.82%, 25.49%, 30.59%, 0.84) 100%)",
             }}
           >
-            <div className="col-md-10 offset-md-1 py-5">
+            <div className="col-lg-10 offset-lg-1 py-5">
               <div className="row" style={{ background: "transparent" }}>
                 <div className="col-3">
                   <div className="card card-body p-0">
@@ -89,24 +91,60 @@ const Movie = () => {
 
       <div className="row py-3">
         <div className="col-5">
-          <h3>Cast</h3>
-          <hr />
+          <h5 className="text-white">Cast</h5>
+          <hr className="bg-white" />
 
           <div className="row">
-            <div className="col-12">
-              {movie.actors.map((actor) => (
-                <div key={actor.firstname} className="text-white">
+            {movie.directors.map((director) => (
+              <div
+                key={director._id}
+                className="col-auto text-center text-white py-2"
+              >
+                <Link to={`/people/${director._id}`}>
                   <i className="fas fa-user-circle fa-5x"></i>
-                  {actor.firstname}
-                </div>
-              ))}
-            </div>
+                  <h6>
+                    {director.firstname} {director.lastname}
+                  </h6>
+                  <span>{director.rank}</span>
+                </Link>
+              </div>
+            ))}
+
+            {movie.actors.map((actor) => (
+              <div
+                key={actor._id}
+                className="col-auto text-center text-white py-2"
+              >
+                <Link to={`/people/${actor._id}`}>
+                  <i className="fas fa-user-circle fa-5x"></i>
+                  <h6>
+                    {actor.firstname} {actor.lastname}
+                  </h6>
+                  <span>{actor.rank}</span>
+                </Link>
+              </div>
+            ))}
+
+            {movie.writers.map((writer) => (
+              <div
+                key={writer._id}
+                className="col-auto text-center text-white py-2"
+              >
+                <Link to={`/people/${writer._id}`}>
+                  <i className="fas fa-user-circle fa-5x"></i>
+                  <h6>
+                    {writer.firstname} {writer.lastname}
+                  </h6>
+                  <span>{writer.rank}</span>
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="col-4">
-          <h5>Reviews</h5>
-          <hr />
+          <h5 className="text-white">Reviews</h5>
+          <hr className="bg-white" />
 
           <div className="row">
             <div className="col">
@@ -128,10 +166,7 @@ const Movie = () => {
           <div className="row">
             <div className="col">
               {movie.reviews.map((review) => (
-                <div className="card card-body text-danger" key={review._id}>
-                  {review._id}
-                  <hr />
-                </div>
+                <ReviewItem review={review} />
               ))}
             </div>
           </div>
@@ -139,6 +174,7 @@ const Movie = () => {
 
         <div className="col-3">
           <h5 className="text-white">Related Movies</h5>
+          <hr className="bg-white" />
           <div
             style={{
               display: "flex",
@@ -160,6 +196,8 @@ const Movie = () => {
           <hr />
         </div>
       </div>
+
+      <ReviewModal></ReviewModal>
     </Fragment>
   );
 };

@@ -8,17 +8,11 @@ const Contributions = ({ _user }) => {
   const { loading, contributions } = useSelector(
     (state) => state.contributions
   );
-  useEffect(() => {
-    // Fetch user contributions
-    dispatch(getUserContributions(_user));
-    return () => {};
-  }, [_user]);
+  const { user } = useSelector((state) => state.auth);
 
-  if (loading) return <h3>Loading...</h3>;
-
-  if (contributions.length === 0)
-    return (
-      <Fragment>
+  const addContributionButton =
+    user && user._id == _user ? (
+      <>
         <div className="row">
           <div className="col">
             <Link
@@ -31,32 +25,66 @@ const Contributions = ({ _user }) => {
         </div>
 
         <hr />
+      </>
+    ) : (
+      ""
+    );
+
+  useEffect(() => {
+    // Fetch user contributions
+    dispatch(getUserContributions(_user));
+    return () => {};
+  }, [_user]);
+
+  if (loading) return <h3>Loading...</h3>;
+
+  if (contributions.length === 0)
+    return (
+      <Fragment>
+        {addContributionButton}
         <h6>No contributions to display</h6>
       </Fragment>
     );
 
   return (
     <Fragment>
-      <div className="row">
-        <div className="col">
-          <Link
-            to="/addContribution"
-            className="btn btn-primary btn-sm float-right"
-          >
-            Add Contribution
-          </Link>
-        </div>
-      </div>
-
-      <hr />
+      {addContributionButton}
       {contributions.map((contribution) => (
-        <Fragment key={contribution._id}>
-          <div className="row" key={contribution._id}>
-            <div className="col-12">{contribution.type}</div>
+        <Link
+          to={
+            contribution.type == "Movie"
+              ? `/movies/${contribution._item._id}`
+              : `/people/${contribution._item._id}`
+          }
+          key={contribution._id}
+        >
+          <div className="card card-body mb-1 p-2">
+            <div className="row" key={contribution._id}>
+              <div className="col-auto">
+                {contribution.type == "Movie" ? (
+                  <img
+                    src={`${contribution._item.image}`}
+                    alt={`${contribution._item.image}`}
+                    style={{
+                      height: "50px",
+                      width: "50px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                ) : (
+                  <i className="fas fa-user-circle fa-3x"></i>
+                )}
+              </div>
+              <div className="col">
+                <h6>
+                  {contribution.type == "Movie"
+                    ? contribution._item.title
+                    : `${contribution._item.firstname} ${contribution._item.lastname}`}
+                </h6>
+              </div>
+            </div>
           </div>
-
-          <hr />
-        </Fragment>
+        </Link>
       ))}
     </Fragment>
   );

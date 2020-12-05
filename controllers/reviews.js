@@ -98,9 +98,20 @@ exports.getMovieReviewsByUser = async (req, res) => {
 exports.getReview = async (req, res) => {
   try {
     //   Find and return review
-    const review = await Review.findById(req.params.id);
+    const review = await Review.findById(req.params._id).populate([
+      {
+        path: "_movie",
+        select: "title",
+      },
+      {
+        path: "_user",
+        select: "username",
+      },
+    ]);
 
-    return res.json(review);
+    if (!review) return res.status(404).json({ message: "review not found" });
+
+    return res.json({ review });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

@@ -6,6 +6,7 @@ import AddContribution from "../contributions/AddContribution";
 import Movie from "../movies/Movie";
 import Movies from "../movies/Movies";
 import People from "../people/People";
+import PersonProfile from "../people/PersonProfile";
 import MyProfile from "../users/MyProfile";
 import Profile from "../users/Profile";
 import Profiles from "../users/Profiles";
@@ -18,6 +19,7 @@ function Routes() {
       <Route exact path="/login" component={Login} />
       <Route exact path="/movies" component={Movies} />
       <Route exact path="/movies/:_id" component={Movie} />
+      <Route exact path="/people/:_id" component={PersonProfile} />
       <Route exact path="/people" component={People} />
       <PrivateRoute exact path="/profiles" component={Profiles} />
       <PrivateRoute exact path="/profile" component={MyProfile} />

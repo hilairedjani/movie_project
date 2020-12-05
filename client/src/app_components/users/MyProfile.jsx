@@ -6,7 +6,7 @@ import Contributions from "../contributions/Contributions";
 import PeopleConnections from "../peopleConnections/PeopleConnections";
 import EditProfileModal from "./EditProfileModal";
 import Followers from "./Followers";
-import Followings from "./Folowings";
+import Followings from "./Followings";
 
 function MyProfile() {
   const { currentProfile, loading } = useSelector((state) => state.users);
@@ -29,7 +29,7 @@ function MyProfile() {
   return (
     <Fragment>
       <div className="row">
-        <div className="col-md-10 offset-md-1">
+        <div className="col-lg-8 offset-lg-2">
           <div className="row">
             <div className="col-sm-3">
               <div className="card card-body text-center pb-2 px-2">
@@ -88,7 +88,9 @@ function MyProfile() {
                   )}
 
                   <a
-                    className="nav-link nav-item"
+                    className={`nav-link nav-item ${
+                      user.role == "user" ? "active" : ""
+                    }`}
                     role="tab"
                     href="#followers-tab-pane"
                     id="followers-nav-tab"

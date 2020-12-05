@@ -13,6 +13,13 @@ export const setAuthHeader = (token) => {
 };
 
 /**
+ * @description Add a common header to all requests
+ */
+export const setSocketHeader = (socketId) => {
+  axios.defaults.headers.common["client-socket-id"] = socketId;
+};
+
+/**
  * @description Set default base url for http requests
  */
 export const setBaseURL = async (url) => {

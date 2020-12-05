@@ -46,11 +46,11 @@ router.get("/movie/:_movie", getMovieReviews);
 router.get("/movie/:_movie/user/:_user", getMovieReviewsByUser);
 
 /**
- * @route GET /reviews/:id
+ * @route GET /reviews/:_id
  * @description Get a given review by id
  * @access Public
  */
-router.get("/:id", getReview);
+router.get("/:_id", getReview);
 
 // == POST ROUTES
 

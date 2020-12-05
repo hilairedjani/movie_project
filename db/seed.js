@@ -177,7 +177,14 @@ const Review = require("../models/review");
 
       // Save movie to DB
       console.log(`== Adding movie ${movieObject.title} to database`);
-      movie = await Movie.createMovie(movieObject);
+      movie = await Movie.createMovie({
+        ...movieObject,
+      });
+
+      movie.actors = [...movieObject.actors];
+      movie.writers = [...movieObject.writers];
+      movie.directors = [...movieObject.directors];
+      await movie.save();
 
       // Add a few reviews for this movie
       for (let i = 1; i <= 5; i++) {

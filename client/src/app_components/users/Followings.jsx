@@ -13,7 +13,7 @@ const Followings = ({ _user }) => {
     // Fetch user followings
     dispatch(getFollowings(_user));
     return () => {};
-  }, []);
+  }, [_user]);
 
   if (loading) return <h3>Loading...</h3>;
 
@@ -27,7 +27,7 @@ const Followings = ({ _user }) => {
   return (
     <Fragment>
       {followings.map((following) => (
-        <Fragment key={following._id}>
+        <Link to={`/users/${following._following._id}`} key={following._id}>
           <div className="card card-body mb-1 py-2">
             <div className="row" key={following._id}>
               <div className="col-auto">
@@ -40,7 +40,7 @@ const Followings = ({ _user }) => {
               </div>
             </div>
           </div>
-        </Fragment>
+        </Link>
       ))}
     </Fragment>
   );

@@ -1,6 +1,9 @@
 // == USER CONNECTIONS CONTROLLER
 
 const UserConnection = require("../models/userConnection");
+const User = require("../models/user");
+
+const socket = require("../middleware/socket");
 
 // == GET
 
@@ -60,6 +63,14 @@ exports.followUser = async (req, res) => {
 
     if (!connection)
       return res.status(400).json({ message: "Could not create connection" });
+
+    // Send follow notification
+    const following = connection._following;
+    if (following.socket) {
+      req.app.io.to(following.socket).emit("followed", {
+        follower: connection._follower,
+      });
+    }
 
     return res.json({ connection, message: "Followed successfully" });
   } catch (error) {

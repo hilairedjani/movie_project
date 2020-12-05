@@ -67,9 +67,27 @@ personSchema.statics = {
       .skip(parseInt(skip));
   },
 
-  // Find a person by id
-  findById: async function (id) {
-    return await this.findById(id);
+  // Find people based on name and rank::director, actor, writer
+  findAllByNameAndRank: async function (name, rank, { limit = 10, skip = 0 }) {
+    const nameRegex = new RegExp("^" + name);
+    return await this.find({
+      $and: [
+        { rank },
+        {
+          $or: [
+            {
+              firstname: {
+                $regex: nameRegex,
+                $options: "i",
+              },
+            },
+            { lastname: { $regex: nameRegex, $options: "i" } },
+          ],
+        },
+      ],
+    })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
   },
 
   // Find a person by name

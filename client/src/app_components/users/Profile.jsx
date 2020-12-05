@@ -3,7 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { getProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
+import PeopleConnections from "../peopleConnections/PeopleConnections";
 import EditProfileModal from "./EditProfileModal";
+import Followers from "./Followers";
+import Followings from "./Followings";
 
 function Profile() {
   const { profile, loading } = useSelector((state) => state.users);
@@ -12,7 +15,6 @@ function Profile() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const _id = _id ? _id : user._id;
     dispatch(getProfile(_id));
     return () => {};
   }, [_id]);
@@ -28,7 +30,7 @@ function Profile() {
   return (
     <Fragment>
       <div className="row">
-        <div className="col-md-10 offset-md-1">
+        <div className="col-lg-10 offset-lg-1">
           <div className="row">
             <div className="col-sm-3">
               <div className="card card-body text-center pb-2 px-2">
@@ -72,20 +74,24 @@ function Profile() {
             <div className="col">
               <nav>
                 <div className="nav nav-tabs" role="tablist">
-                  <a
-                    className="nav-item nav-link active"
-                    role="tab"
-                    href="#contributions-tab-pane"
-                    id="contributions-nav-tab"
-                    data-toggle="tab"
-                    aria-controls="contributions-tab-pane"
-                    aria-selected="true"
-                  >
-                    Contributions
-                  </a>
+                  {profile.role == "contributor" && (
+                    <a
+                      className="nav-item nav-link active"
+                      role="tab"
+                      href="#contributions-tab-pane"
+                      id="contributions-nav-tab"
+                      data-toggle="tab"
+                      aria-controls="contributions-tab-pane"
+                      aria-selected="true"
+                    >
+                      Contributions
+                    </a>
+                  )}
 
                   <a
-                    className="nav-link nav-item"
+                    className={`nav-link nav-item ${
+                      profile.role == "user" ? "active" : ""
+                    }`}
                     role="tab"
                     href="#followers-tab-pane"
                     id="followers-nav-tab"
@@ -122,21 +128,25 @@ function Profile() {
                 </div>
               </nav>
 
-              <div className="tab-content card card-body my-1">
-                <div
-                  className="tab-pane fade show active"
-                  id="contributions-tab-pane"
-                  role="tabpanel"
-                >
-                  <Contributions></Contributions>
-                </div>
+              <div className="tab-content my-1">
+                {profile.role == "contributor" && (
+                  <div
+                    className="tab-pane fade show active"
+                    id="contributions-tab-pane"
+                    role="tabpanel"
+                  >
+                    <Contributions _user={profile._id}></Contributions>
+                  </div>
+                )}
 
                 <div
-                  className="tab-pane fade"
+                  className={`tab-pane fade ${
+                    profile.role == "user" ? "show active" : ""
+                  }`}
                   id="followers-tab-pane"
                   role="tabpanel"
                 >
-                  Foll...
+                  <Followers _user={profile._id}></Followers>
                 </div>
 
                 <div
@@ -144,7 +154,7 @@ function Profile() {
                   id="following-tab-pane"
                   role="tabpanel"
                 >
-                  Following
+                  <Followings _user={profile._id}></Followings>
                 </div>
 
                 <div
@@ -152,14 +162,13 @@ function Profile() {
                   id="people-tab-pane"
                   role="tabpanel"
                 >
-                  People
+                  <PeopleConnections _user={profile._id} />
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>{" "}
-      {profile._id == user._id && <EditProfileModal></EditProfileModal>}
+      </div>
     </Fragment>
   );
 }

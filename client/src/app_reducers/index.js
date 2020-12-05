@@ -7,6 +7,8 @@ import { default as contributions } from "./contributions";
 import { default as people } from "./people";
 import { default as usersConnections } from "./usersConnections";
 import { default as peopleConnections } from "./peopleConnections";
+import { default as reviews } from "./reviews";
+import { default as sockets } from "./sockets";
 
 export default combineReducers({
   auth,
@@ -16,4 +18,6 @@ export default combineReducers({
   people,
   usersConnections,
   peopleConnections,
+  reviews,
+  sockets,
 });

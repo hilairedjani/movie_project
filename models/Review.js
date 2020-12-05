@@ -118,11 +118,6 @@ reviewSchema.statics = {
       .skip(parseInt(skip));
   },
 
-  // Find a given review by id
-  findById: async function (id) {
-    return await this.findById(id);
-  },
-
   //   Calculate average review for a given movie
   calculateAverageReviewForMovie: async function (_movie) {
     const reviews = await this.find({ _movie });

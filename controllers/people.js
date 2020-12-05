@@ -2,6 +2,7 @@
 
 const Person = require("../models/person");
 const Contribution = require("../models/contribution");
+const Movie = require("../models/movie");
 
 const mongoose = require("mongoose");
 
@@ -15,8 +16,13 @@ exports.getPeople = async (req, res) => {
 
     //   Return all people in db
     let people = [];
-
-    if (req.query.name) {
+    if (req.query.name && req.query.rank) {
+      people = await Person.findAllByNameAndRank(
+        req.query.name,
+        req.query.rank,
+        { skip, limit }
+      );
+    } else if (req.query.name) {
       people = await Person.findAllByName(req.query.name, { skip, limit });
     } else if (req.query.rank) {
       people = await Person.findAllByRank(req.query.rank, { skip, limit });
@@ -24,7 +30,7 @@ exports.getPeople = async (req, res) => {
       people = await Person.findAll({ skip, limit });
     }
 
-    return res.json(people);
+    return res.json({ people });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -96,11 +102,61 @@ exports.getPerson = async (req, res) => {
   try {
     const personId = req.params.id;
 
-    const person = await Person.findById(personId);
+    const person = await Person.findById(personId).lean();
 
     if (!person) {
       return res.status(404).json({ message: "Person not found" });
     }
+
+    // Find movies
+    person.movies = await Movie.find({
+      $or: [
+        { actors: { $in: person._id } },
+        { writers: { $in: person._id } },
+        { directors: { $in: person._id } },
+      ],
+    });
+
+    // Find closets collaborators
+    let collaborators = {};
+
+    for (let i = 0; i < person.movies.length; i++) {
+      for (let j = 0; j < person.movies[i].actors.length; j++) {
+        if (!person.movies[i].actors[j].equals(person._id)) {
+          if (collaborators[person.movies[i].actors[j]])
+            collaborators[person.movies[i].actors[j]]++;
+          else collaborators[person.movies[i].actors[j]] = 1;
+        }
+      }
+
+      for (let j = 0; j < person.movies[i].directors.length; j++) {
+        if (!person.movies[i].directors[j].equals(person._id)) {
+          if (collaborators[person.movies[i].directors[j]])
+            collaborators[person.movies[i].directors[j]]++;
+          else collaborators[person.movies[i].directors[j]] = 1;
+        }
+      }
+
+      for (let j = 0; j < person.movies[i].writers.length; j++) {
+        if (!person.movies[i].writers[j].equals(person._id)) {
+          if (collaborators[person.movies[i].writers[j]])
+            collaborators[person.movies[i].writers[j]]++;
+          else collaborators[person.movies[i].writers[j]] = 1;
+        }
+      }
+    }
+
+    // Sort the collaborators
+    let sortedCollaborators = Object.keys(collaborators).sort(function (a, b) {
+      return collaborators[a] - collaborators[b];
+    });
+
+    if (sortedCollaborators.length > 5)
+      sortedCollaborators = sortedCollaborators.slice(0, 5);
+
+    person.frequentCollaborators = await Person.find({
+      _id: { $in: sortedCollaborators },
+    });
 
     return res.json(person);
   } catch (error) {

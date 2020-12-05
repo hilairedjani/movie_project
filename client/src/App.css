@@ -54,8 +54,10 @@ label {
 
 .review-star {
   color: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 }
 
 .review-star-active {
   color: gold;
+  cursor: pointer;
 }

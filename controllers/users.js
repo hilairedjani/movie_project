@@ -6,7 +6,6 @@ const PersonConnection = require("../models/personConnection");
 const UserConnection = require("../models/userConnection");
 
 const socket = require("../middleware/socket");
-const user = require("../models/user");
 
 /**
  * @description Fetch all users::First 10 users by default
@@ -80,7 +79,7 @@ exports.getCurrentProfile = async (req, res) => {
     // Fetch user contributions
     profile.contributions = await Contribution.find({
       _user: profile._id,
-    }).populate("_item", ["title", "firstname", "lastname", "rank"]);
+    }).populate("_item", ["title", "firstname", "lastname", "rank", "image"]);
 
     // Fetch people following
     profile.people = await PersonConnection.distinct("_person", {

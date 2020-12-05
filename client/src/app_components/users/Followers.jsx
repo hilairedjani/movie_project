@@ -11,7 +11,7 @@ const Followers = ({ _user }) => {
     // Fetch user contributions
     dispatch(getFollowers(_user));
     return () => {};
-  }, []);
+  }, [_user]);
 
   if (loading) return <h3>Loading...</h3>;
 
@@ -25,11 +25,20 @@ const Followers = ({ _user }) => {
   return (
     <Fragment>
       {followers.map((follower) => (
-        <Fragment key={follower._id}>
-          <div className="row" key={follower._id}></div>
+        <Link to={`/users/${follower._follower._id}`} key={follower._id}>
+          <div className="card card-body mb-1 py-2">
+            <div className="row" key={follower._id}>
+              <div className="col-auto">
+                <i className="fas fa-user-circle fa-3x"></i>
+              </div>
 
-          <hr />
-        </Fragment>
+              <div className="col">
+                <h6>{follower._follower.username}</h6>
+                {follower._follower.firstname} {follower._follower.lastname}
+              </div>
+            </div>
+          </div>
+        </Link>
       ))}
     </Fragment>
   );

@@ -11,7 +11,7 @@ const People = () => {
 
   useEffect(() => {
     // Fetch people
-    dispatch(getPeople());
+    dispatch(getPeople(0, 20));
     return () => {};
   }, []);
 

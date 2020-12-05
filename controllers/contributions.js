@@ -9,6 +9,11 @@ exports.getUserContributions = async (req, res) => {
     // Fetch contributions for user
     const contributions = await Contribution.find({ _user }).populate("_item", [
       "title",
+      "image",
+      "_id",
+      "firstname",
+      "lastname",
+      "rank",
     ]);
 
     return res.json(contributions);

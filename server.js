@@ -1,14 +1,11 @@
 const express = require("express");
 const http = require("http");
 const session = require("express-session");
-const path = require("path");
 const dotenv = require("dotenv");
 const socketIo = require("socket.io");
 
 const { connectDatabase } = require("./db");
-const socket = require("./middleware/socket");
-
-const Movie = require("./models/movie");
+// const socket = require("./middleware/socket");
 
 // Create express app
 const app = express();
@@ -18,7 +15,11 @@ dotenv.config();
 
 // Create app server and connect to socket
 const server = http.createServer(app);
-socket.connect(server);
+const io = socketIo(server, { cors: { origin: "*" } });
+
+app.io = io;
+
+// socket.connect(server);
 
 const PORT = process.env.PORT || 5000;
 
@@ -60,28 +61,16 @@ app.use("/contributions", require("./routes/contributions"));
 app.use("/peopleConnections", require("./routes/peopleConnections"));
 app.use("/usersConnections", require("./routes/usersConnections"));
 
-// app.get("/", async (req, res) => {
-//   const movies = await Movie.findAll({ limit: 25, skip: 0 });
-
-//   return res.format({
-//     "application/json": function () {
-//       res.json(movies);
-//     },
-
-//     "text/html": function () {
-//       if (req.session.user) res.render("popularmovies", { movies: movies });
-//       else res.render("index", { movies: movies });
-//     },
-
-//     default: function () {
-//       // log the request and respond with 406
-//       res.status(406).send("Not Acceptable");
-//     },
-//   });
-// });
-
 // Connect database
 connectDatabase();
+
+io.on("connection", (socket) => {
+  console.log(`== Connected: Client ${socket.id} just connected`);
+  this.socket = socket;
+
+  // Send id back to client
+  io.to(socket.id).emit("client-socket-id", { socketId: socket.id });
+});
 
 // Start server
 server.listen(PORT, () => console.log(`Server running on port: ${PORT}`));

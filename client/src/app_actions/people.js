@@ -23,7 +23,7 @@ export const getPerson = (_id) => async (dispatch) => {
     const response = await axios.get(`/people/${_id}`);
 
     dispatch({
-      type: GET_PEOPLE,
+      type: GET_PERSON,
       payload: response.data,
     });
   } catch (error) {

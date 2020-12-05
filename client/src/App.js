@@ -5,15 +5,18 @@ import socketIOClient from "socket.io-client";
 
 import "./App.css";
 import "alertifyjs/build/css/alertify.css";
+import "react-notifications/lib/notifications.css";
 import Landing from "./app_components/generic/Landing";
 import Navbar from "./app_components/generic/Navbar";
 import Routes from "./app_components/routing/Routes";
 
-import { setAuthHeader } from "./app_helpers";
+import { setAuthHeader, setSocketHeader } from "./app_helpers";
 import { setCurrentUser } from "./app_actions/auth";
 import { getCurrentProfile } from "./app_actions/users";
+import { addSocketRef } from "./app_actions/sockets";
 
 import store from "./app_store";
+import Notifications from "./app_components/generic/Notifications";
 
 // store.dispatch(setCurrentUser());
 
@@ -34,7 +37,16 @@ const App = () => {
 
   useEffect(() => {
     const socket = socketIOClient("http://localhost:5000");
-    socket.on("connect", () => console.log("== Client Socket connected"));
+
+    // Add socket ref to store
+    store.dispatch(addSocketRef(socket));
+    socket.on("connect", () => {
+      socket.on("client-socket-id", (data) => {
+        // Add socket id to headers
+        console.log(`Socket ID: ${data.socketId}`);
+        setSocketHeader(data.socketId);
+      });
+    });
 
     // Fetch current user and profile
     store.dispatch(setCurrentUser());
@@ -49,6 +61,7 @@ const App = () => {
           <Route exact path="/" component={Landing} />
           <Route component={Routes} />
         </Switch>
+        <Notifications></Notifications>
       </Router>
     </StoreProvider>
   );

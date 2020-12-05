@@ -88,7 +88,9 @@ exports.getMovieById = async (req, res) => {
     });
 
     // Find movie reviews
-    const reviews = await Review.find({ _movie: movie._id });
+    const reviews = await Review.find({ _movie: movie._id }).populate("_user", [
+      "username",
+    ]);
 
     return res.json({ ...movie, relatedMovies, reviews });
 
@@ -129,12 +131,21 @@ exports.createMovie = async (req, res) => {
       rating,
       country,
       image,
+      actors,
+      directors,
+      writers,
     } = req.body;
     let movieObj = {};
 
     if (title) movieObj.title = title.trim();
     if (releaseYear) movieObj.releaseYear = releaseYear;
-    if (genre) movieObj.genre = genre;
+    if (genre) {
+      // Split if string
+      if (typeof genre === "string" || genre instanceof String)
+        movieObj.genre = genre.split(/[ ,]+/);
+      else movieObj.genre = genre;
+    }
+
     if (runtime) movieObj.runtime = runtime;
     if (plot) movieObj.plot = plot.trim();
     if (rating) movieObj.rating = rating.trim();
@@ -151,6 +162,13 @@ exports.createMovie = async (req, res) => {
       session.abortTransaction();
       return res.status(401).json({ message: "Could not create movie" });
     }
+
+    // Add people
+    movie.actors = actors;
+    movie.directors = directors;
+    movie.writers = writers;
+
+    await movie.save();
 
     // Add contribution
     let contribution;

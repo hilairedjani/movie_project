@@ -8,7 +8,7 @@ const AddContribution = () => {
 
   return (
     <div className="row">
-      <div className="col-md-6 offset-md-3">
+      <div className="col-lg-6 offset-lg-3 col-mg-10 offset-md-1">
         <div className="card card-body">
           <div className="row">
             <div className="col">

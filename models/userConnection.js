@@ -34,22 +34,48 @@ userConnectionSchema.methods = {};
 userConnectionSchema.statics = {
   // Create a new connection
   follow: async function ({ _follower, _following }) {
-    const contribution = await new this({
+    const connection = await new this({
       _follower,
       _following,
     });
 
-    await contribution.save();
+    await connection.save();
 
-    return contribution;
+    await connection
+      .populate([
+        {
+          path: "_follower",
+        },
+        {
+          path: "_following",
+        },
+      ])
+      .execPopulate();
+
+    return connection;
   },
 
   // Delete a given connection
   unfollow: async function ({ _id, _follower, _following }, options) {
-    if (_id) return this.findByIdAndDelete(_id);
-    if (_follower && _following)
-      return this.findOneAndDelete({ _follower, _following });
-    return null;
+    let connection;
+    if (_id) connection = await this.findByIdAndDelete(_id);
+    else if (_follower && _following)
+      connection = await this.findOneAndDelete({ _follower, _following });
+
+    if (connection) {
+      await connection
+        .populate([
+          {
+            path: "_follower",
+          },
+          {
+            path: "_following",
+          },
+        ])
+        .execPopulate();
+    }
+
+    return connection;
   },
 };
 

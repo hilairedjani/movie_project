@@ -61,7 +61,7 @@ const Navbar = () => {
 
           {!loading ? (isAuthenticated ? authLinks : nauthLinks) : ""}
         </div>
-        <hr className="text-muted" />
+        <hr className="bg-white" />
       </div>
     </div>
   );

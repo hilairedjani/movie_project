@@ -40,14 +40,16 @@ const peopleReducer = (state = initialState, { type, payload, skip = 0 }) => {
         message: "",
         people:
           skip === 0
-            ? payload
+            ? payload.people
             : state.people
                 .filter(
                   (person) =>
-                    !payload.some((newPerson) => newPerson._id === person._id)
+                    !payload.people.some(
+                      (newPerson) => newPerson._id === person._id
+                    )
                 )
                 .concat(payload),
-        loadMore: payload.length > 0 ? true : false,
+        loadMore: payload.people.length > 0 ? true : false,
       };
 
     case CREATE_PERSON_SUCCESS:

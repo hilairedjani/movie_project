@@ -19,7 +19,7 @@ const Profiles = () => {
 
   return (
     <div className="row">
-      <div className="col-md-6 offset-md-3">
+      <div className="col-md-10 offset-md-1 col-lg-6 offset-lg-3">
         <h4 className="text-white">Users</h4>
 
         <hr className="text-muted" />

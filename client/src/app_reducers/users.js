@@ -119,7 +119,7 @@ const userReducer = (state = initialState, { type, payload, skip = 0 }) => {
           ...state.currentProfile,
           following: [
             ...state.currentProfile.following,
-            payload.connection._following,
+            payload.connection._following._id,
           ],
         },
         message: "",
@@ -134,7 +134,7 @@ const userReducer = (state = initialState, { type, payload, skip = 0 }) => {
         currentProfile: {
           ...state.currentProfile,
           following: state.currentProfile.following.filter(
-            (profile) => profile !== payload.connection._following
+            (profile) => profile !== payload.connection._following._id
           ),
         },
         message: "",
