@@ -47,6 +47,12 @@ const movieSchema = new Schema(
       min: 0,
       default: 0,
     },
+    reviewAverage: {
+      type: Number,
+      min: 0,
+      max: 10,
+      default: 0,
+    },
     actors: [
       {
         type: Schema.Types.ObjectId,
@@ -86,6 +92,15 @@ movieSchema.methods = {
   // Add a writer to a movie
   addWriter: async function (writerId) {
     await this.writers.push(writerId);
+    return;
+  },
+
+  // Update a movie's review
+  updateMovieReview: async function (value) {
+    this.totalReview += value;
+    this.reviewCount++;
+    this.reviewAverage =
+      this.reviewCount > 0 ? this.totalReview / this.reviewCount : 0;
     return;
   },
 
@@ -131,8 +146,24 @@ movieSchema.statics = {
   },
 
   // Find movies based on release year
-  findAllByYear: async function (year, { skip = 0, limit = 10 }) {
-    return await this.find({ year: year })
+  findAllByReleaseYear: async function (releaseYear, { skip = 0, limit = 10 }) {
+    return await this.find({ releaseYear })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
+
+  // Find movies based on rating
+  findAllByRating: async function (rating, { skip = 0, limit = 10 }) {
+    const searchRegex = new RegExp(rating);
+
+    return await this.find({ rating: { $regex: searchRegex, $options: "i" } })
+      .limit(parseInt(limit))
+      .skip(parseInt(skip));
+  },
+
+  // Find movies based on minimum review score
+  findAllByMinRating: async function (minRating, { skip = 0, limit = 10 }) {
+    return await this.find({ reviewAverage: { $gte: parseInt(minRating) } })
       .limit(parseInt(limit))
       .skip(parseInt(skip));
   },

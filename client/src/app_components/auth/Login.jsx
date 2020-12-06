@@ -8,23 +8,20 @@ import LoginForm from "../generic/LoginForm";
 const Login = () => {
   const { isAuthenticated, error } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (error.length > 0) {
-      alertify.error(error);
-    }
-  }, [error]);
-
   if (isAuthenticated) {
     return <Redirect to="/movies" />;
   }
 
   return (
     <div className="row">
-      <div className="col-sm-6 col-md-4 offset-sm-3 offset-md-4">
-        <div className="card card-body bg-dark">
-          <h1 className="text-muted card-title">Login</h1>
+      <div className="col-sm-6 col-lg-4 offset-sm-3 offset-lg-4">
+        <h1 className="text-white card-title">Login</h1>
 
-          <hr />
+        {error.length > 0 && (
+          <div className="card body bg-danger text-white">{error}</div>
+        )}
+
+        <div className="card card-body bg-dark">
           <LoginForm></LoginForm>
         </div>
       </div>

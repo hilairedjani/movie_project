@@ -23,7 +23,7 @@ const MovieSearchBar = () => {
       <div className="row">
         <div className="col pb-1">
           <input
-            className="form-control app-input"
+            className="form-control text-white bg-dark"
             type="search"
             placeholder="Enter movie title.."
             aria-label="Search"
@@ -36,7 +36,7 @@ const MovieSearchBar = () => {
       {title.length > 0 && (
         <div className="row">
           <div className="col">
-            <div className="card card-body pb-0">
+            <div className="card card-body pb-0 bg-dark text-white">
               {searchedMovies.length <= 0 && <h6>No movies found</h6>}
               {searchedMovies.map((movie) => (
                 <Fragment key={movie._id}>
@@ -44,7 +44,7 @@ const MovieSearchBar = () => {
                     {movie.title}
                   </Link>
 
-                  <hr />
+                  <hr className="bg-muted" />
                 </Fragment>
               ))}
             </div>

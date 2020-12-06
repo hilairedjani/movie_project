@@ -4,10 +4,12 @@ import {
   CREATE_REVIEW_FAIL,
   CREATE_REVIEW_SUCCESS,
   GET_REVIEW,
+  GET_USER_REVIEWS,
   REVIEWS_LOADING,
 } from "./";
 
 // == GET REQUESTS
+
 export const getReview = (_id) => async (dispatch) => {
   try {
     // dispatch({ type: REVIEWS_LOADING });
@@ -16,6 +18,22 @@ export const getReview = (_id) => async (dispatch) => {
     const response = await axios.get(`/reviews/${_id}`);
 
     dispatch({ type: GET_REVIEW, payload: response.data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * @description Get all reviews by a given user
+ */
+export const getUserReviews = (_user) => async (dispatch) => {
+  try {
+    // dispatch({ type: REVIEWS_LOADING });
+
+    // API call to get reviews by a user
+    const response = await axios.get(`/reviews/user/${_user}`);
+
+    dispatch({ type: GET_USER_REVIEWS, payload: response.data });
   } catch (error) {
     console.log(error);
   }

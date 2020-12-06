@@ -49,9 +49,10 @@ const RegisterForm = () => {
       firstname,
       lastname,
       email,
+      role: "user",
     };
-    console.log(userData);
-    // await dispatch(register(userData));
+
+    await dispatch(register(userData));
   };
 
   return (
@@ -126,7 +127,11 @@ const RegisterForm = () => {
             required
           />
         </div>
-        <input type="submit" className="btn btn-primary" value="Register" />
+        <input
+          type="submit"
+          className="btn btn-primary btn-block"
+          value="Register"
+        />
       </form>
     </Fragment>
   );

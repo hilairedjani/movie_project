@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { getPopularMovies } from "../../app_actions/movies";
+import MovieSearchBar from "../movies/MovieSearchBar";
 
 const Landing = () => {
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
@@ -22,31 +23,12 @@ const Landing = () => {
       <div className="col-md-8 offset-md-2">
         <div className="row">
           <div className="col-md-10 offset-md-1">
-            <form className="form-inline my-2 my-lg-0 p-0 w-100">
-              <div className="row w-100">
-                <div className="col">
-                  <input
-                    className="form-control mr-sm-2 bg-dark w-100"
-                    type="search"
-                    placeholder="Find a movie..."
-                    aria-label="Search"
-                  />
-                </div>
-                <div className="col-2">
-                  <button
-                    className="btn btn-warning my-2 my-sm-0 font-weight-bold btn-block"
-                    type="submit"
-                  >
-                    Search
-                  </button>
-                </div>
-              </div>
-            </form>
+            <MovieSearchBar></MovieSearchBar>
           </div>
         </div>
 
         <div className="row">
-          <div className="col-md-10 offset-md-1 py-5">
+          <div className="col-md-10 offset-md-1 pb-5 pt-">
             <div
               id="top-movies"
               className="carousel slide"

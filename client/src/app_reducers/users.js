@@ -70,7 +70,7 @@ const userReducer = (state = initialState, { type, payload, skip = 0 }) => {
         loading: false,
         success: true,
         message: "Profile has been updated",
-        profile: { ...state.profile, ...payload.user },
+        currentProfile: { ...state.currentProfile, ...payload.user },
       };
 
     case UPDATE_PROFILE_FAIL:

@@ -38,7 +38,7 @@ const Contributions = ({ _user }) => {
 
   if (loading) return <h3>Loading...</h3>;
 
-  if (contributions.length === 0)
+  if (!loading && contributions.length === 0)
     return (
       <Fragment>
         {addContributionButton}
@@ -65,6 +65,7 @@ const Contributions = ({ _user }) => {
                   <img
                     src={`${contribution._item.image}`}
                     alt={`${contribution._item.image}`}
+                    className="img-fluid"
                     style={{
                       height: "50px",
                       width: "50px",

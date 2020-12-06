@@ -40,11 +40,15 @@ export const getMovie = (id) => async (dispatch) => {
 /**
  * @description Get movies
  */
-export const getMovies = (skip, limit) => async (dispatch) => {
+export const getMovies = ({ skip = 0, limit = 20, queryParams = "" }) => async (
+  dispatch
+) => {
   try {
     dispatch({ type: MOVIES_LOADING });
 
-    const response = await axios.get(`/movies?skip=${skip}&limit=${limit}`);
+    const response = await axios.get(
+      `/movies?skip=${skip}&limit=${limit}&${queryParams}`
+    );
 
     dispatch({
       type: GET_MOVIES,
@@ -126,12 +130,33 @@ export const createMovie = (movieData, history) => async (dispatch) => {
     console.log(error);
 
     dispatch({
-      type: GET_MOVIES_ERROR,
+      type: CREATE_MOVIE_FAIL,
       payload: error.response.data.message,
     });
+  }
+};
+
+// == PUT ACTIONS
+
+/**
+ * @description Update a movie
+ */
+export const updateMovie = (_id, movieData, history) => async (dispatch) => {
+  try {
+    dispatch({ type: MOVIES_LOADING });
+
+    // API call to update a movie
+    const response = await axios.patch(`/movies/${_id}`, movieData);
+
+    dispatch({ type: UPDATE_MOVIE_SUCCESS, payload: response.data });
+
+    history.push(`/movies/${response.data.movie._id}`);
+  } catch (error) {
+    console.log(error);
 
     dispatch({
-      type: CREATE_MOVIE_FAIL,
+      type: UPDATE_MOVIE_FAIL,
+      payload: error.response.data.message,
     });
   }
 };

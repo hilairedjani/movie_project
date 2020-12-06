@@ -52,7 +52,11 @@ const LoginForm = () => {
             required
           />
         </div>
-        <input type="submit" className="btn btn-primary" value="Login" />
+        <input
+          type="submit"
+          className="btn btn-primary btn-block"
+          value="Login"
+        />
       </form>
     </Fragment>
   );

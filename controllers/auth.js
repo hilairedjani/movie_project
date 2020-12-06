@@ -32,11 +32,6 @@ exports.login = async (req, res) => {
         .status(400)
         .json({ message: "Username or password incorrect" });
 
-    //
-
-    // Store user id in session object
-    // req.session.user = user.id;
-
     // Sign jwt
     const token = await jwt.sign({ user: user.id }, process.env.JWT_SECRET);
 

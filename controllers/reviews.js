@@ -36,7 +36,7 @@ exports.getUserReviews = async (req, res) => {
       skip,
     });
 
-    return res.json(reviews);
+    return res.json({ reviews });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -153,9 +153,11 @@ exports.createReview = async (req, res) => {
     if (!review)
       return res.status(400).json({ message: "Could not create review" });
 
-    // Increment movie review total and review count
-    await movie.incrementTotalReview(value);
-    await movie.incrementReviewCount();
+    await review.populate("_user", ["username"]);
+    await review.execPopulate();
+
+    // Increment movie review total and review count, and adjust average
+    await movie.updateMovieReview(value);
     await movie.save();
 
     return res.json({ review, message: "Review added successfully", movie });

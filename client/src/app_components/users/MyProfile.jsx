@@ -4,6 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import { getProfile, getCurrentProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
 import PeopleConnections from "../peopleConnections/PeopleConnections";
+import ReviewModal from "../reviews/ReviewModal";
+import UserReviews from "../reviews/UserReviews";
 import EditProfileModal from "./EditProfileModal";
 import Followers from "./Followers";
 import Followings from "./Followings";
@@ -73,7 +75,7 @@ function MyProfile() {
             <div className="col">
               <nav>
                 <div className="nav nav-tabs" role="tablist">
-                  {user.role == "contributor" && (
+                  {currentProfile.role == "contributor" && (
                     <a
                       className="nav-item nav-link active"
                       role="tab"
@@ -89,7 +91,7 @@ function MyProfile() {
 
                   <a
                     className={`nav-link nav-item ${
-                      user.role == "user" ? "active" : ""
+                      currentProfile.role == "user" ? "active" : ""
                     }`}
                     role="tab"
                     href="#followers-tab-pane"
@@ -124,11 +126,23 @@ function MyProfile() {
                   >
                     People
                   </a>
+
+                  <a
+                    className="nav-link"
+                    role="tab"
+                    href="#reviews-tab-pane"
+                    id="reviews-nav-tab"
+                    data-toggle="tab"
+                    aria-controls="reviews-tab-pane"
+                    aria-selected="false"
+                  >
+                    Reviews
+                  </a>
                 </div>
               </nav>
 
               <div className="tab-content my-1">
-                {user.role == "contributor" && (
+                {currentProfile.role == "contributor" && (
                   <div
                     className="tab-pane fade show active"
                     id="contributions-tab-pane"
@@ -140,7 +154,7 @@ function MyProfile() {
 
                 <div
                   className={`tab-pane fade ${
-                    user.role == "user" ? "show active" : ""
+                    currentProfile.role == "user" ? "show active" : ""
                   }`}
                   id="followers-tab-pane"
                   role="tabpanel"
@@ -162,6 +176,14 @@ function MyProfile() {
                   role="tabpanel"
                 >
                   <PeopleConnections _user={currentProfile._id} />
+                </div>
+
+                <div
+                  className="tab-pane fade"
+                  id="reviews-tab-pane"
+                  role="tabpanel"
+                >
+                  <UserReviews _user={currentProfile._id} />
                 </div>
               </div>
             </div>

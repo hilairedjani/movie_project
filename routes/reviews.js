@@ -32,11 +32,11 @@ router.get("/", getReviews);
 router.get("/user/:_user", getUserReviews);
 
 /**
- * @route GET /reviews/movie/:_movie
+ * @route GET /reviews/_movie/:_movie
  * @description Get all reviews for a given movie
  * @access Public
  */
-router.get("/movie/:_movie", getMovieReviews);
+router.get("/_movie/:_movie", getMovieReviews);
 
 /**
  * @route GET /reviews/movie/:_movie/user/:_user

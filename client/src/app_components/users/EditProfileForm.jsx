@@ -11,6 +11,8 @@ const initialState = {
   role: "",
 };
 
+const roles = ["contributor", "user"];
+
 const EditProfileForm = () => {
   const { user } = useSelector((state) => state.auth);
 
@@ -94,9 +96,27 @@ const EditProfileForm = () => {
           />
         </div>
 
+        <div className="form-group">
+          <label htmlFor="role">Role</label>
+          <select
+            className="custom-select custom-select-lg mb-3 app-input"
+            id="role"
+            required
+            name="role"
+            onChange={onChange}
+            value={role}
+          >
+            {roles.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <input
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary btn-block"
           value="Submit"
           onClick={onSubmit}
           data-dismiss="modal"

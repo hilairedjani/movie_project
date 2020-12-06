@@ -66,7 +66,7 @@ const AddContribution = () => {
                   <h4>
                     <i className="fas fa-film"></i> Add a Movie
                   </h4>
-                  <AddMovieForm></AddMovieForm>
+                  <AddMovieForm action="create"></AddMovieForm>
                 </Fragment>
               )}
               {showPersonForm && (

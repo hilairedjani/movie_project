@@ -77,11 +77,30 @@ const moviesReducer = (state = initialState, { type, payload, skip = 0 }) => {
         loading: false,
         success: true,
         message: payload.message,
-        movie: payload.movie,
+        movie: null,
         error: "",
       };
 
     case CREATE_MOVIE_FAIL:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        message: "",
+        error: payload,
+      };
+
+    case UPDATE_MOVIE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        message: payload.message,
+        movie: null,
+        error: "",
+      };
+
+    case UPDATE_MOVIE_FAIL:
       return {
         ...state,
         loading: false,

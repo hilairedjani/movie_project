@@ -4,10 +4,42 @@ const Movie = require("../models/movie");
 const Person = require("../models/person");
 const Contribution = require("../models/contribution");
 const Review = require("../models/review");
+const UserConnection = require("../models/userConnection");
+
+const { fetchmoviefromapi, parseRawMovie } = require("../helpers");
 
 const mongoose = require("mongoose");
 
 let movies = require("../db/movies.json");
+
+/**
+ * @description Scrape information about a given movie by Title
+ */
+exports.scraper = async (req, res) => {
+  try {
+    let rawMovie = await fetchmoviefromapi(req.params.title);
+    rawMovie = JSON.parse(rawMovie);
+
+    // Parse movie
+    if (!rawMovie || rawMovie.Error)
+      return res
+        .status(404)
+        .json({ message: "Could not find movie", movie: null });
+
+    const movie = await parseRawMovie(rawMovie);
+
+    if (!movie)
+      return res
+        .status(404)
+        .json({ message: "Could not find movie", movie: null });
+
+    return res.json({ movie });
+  } catch (error) {
+    console.log("An error occured...");
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
 
 /**
  * @description Fetch all movies::First 10 movies by default
@@ -24,8 +56,18 @@ exports.getMovies = async (req, res) => {
       movies = await Movie.findAllByTitle(req.query.title, { skip, limit });
     } else if (req.query.genre) {
       movies = await Movie.findAllByGenre(req.query.genre, { skip, limit });
-    } else if (req.query.year) {
-      movies = await Movie.findAllByYear(req.query.year, { skip, limit });
+    } else if (req.query.releaseYear) {
+      movies = await Movie.findAllByReleaseYear(req.query.releaseYear, {
+        skip,
+        limit,
+      });
+    } else if (req.query.rating) {
+      movies = await Movie.findAllByRating(req.query.rating, { skip, limit });
+    } else if (req.query.minRating) {
+      movies = await Movie.findAllByMinRating(req.query.minRating, {
+        skip,
+        limit,
+      });
     } else {
       movies = await Movie.findAll({ skip, limit });
     }
@@ -93,21 +135,6 @@ exports.getMovieById = async (req, res) => {
     ]);
 
     return res.json({ ...movie, relatedMovies, reviews });
-
-    // return res.format({
-    //   "application/json": function () {
-    //     res.json({ movie, relatedMovies });
-    //   },
-
-    //   "text/html": function () {
-    //     res.render("movie", { movie, relatedMovies });
-    //   },
-
-    //   default: function () {
-    //     // log the request and respond with 406
-    //     res.status(406).send("Not Acceptable");
-    //   },
-    // });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);
@@ -138,6 +165,21 @@ exports.createMovie = async (req, res) => {
     let movieObj = {};
 
     if (title) movieObj.title = title.trim();
+
+    // Check if movie already exists
+    let movie = await Movie.findOne({
+      title: {
+        $regex: new RegExp(movieObj.title),
+        $options: "i",
+      },
+    });
+
+    if (movie) {
+      return res
+        .status(400)
+        .json({ message: "A movie with this name already exists" });
+    }
+
     if (releaseYear) movieObj.releaseYear = releaseYear;
     if (genre) {
       // Split if string
@@ -156,7 +198,7 @@ exports.createMovie = async (req, res) => {
     await session.startTransaction();
 
     // Create movie
-    const movie = await Movie.createMovie(movieObj);
+    movie = await Movie.createMovie(movieObj);
 
     if (!movie) {
       session.abortTransaction();
@@ -184,6 +226,8 @@ exports.createMovie = async (req, res) => {
         session.abortTransaction();
         return res.status(401).json({ message: "Could not create movie" });
       }
+
+      await contribution.populate("_user", ["username"]).execPopulate();
     }
 
     session.commitTransaction();
@@ -192,11 +236,28 @@ exports.createMovie = async (req, res) => {
 
     session.endSession();
 
+    // Send notifications to users following contributor
+    if (req.user) {
+      const contributorFollowers = await UserConnection.find({
+        _following: req.user,
+      }).populate("_follower", ["socket"]);
+
+      for (let i = 0; i < contributorFollowers.length; i++) {
+        if (contributorFollowers[i]._follower.socket) {
+          req.app.io
+            .to(contributorFollowers[i]._follower.socket)
+            .emit("addedMovie", {
+              contribution,
+            });
+        }
+      }
+    }
+
     // Return created movie
     return res.json({
       movie,
       contribution,
-      message: "Person created successfully",
+      message: "Movie created successfully",
     });
   } catch (error) {
     console.log("An error occured...");
@@ -227,22 +288,65 @@ exports.updateMovie = async (req, res) => {
       plot,
       rating,
       country,
+      image,
+      actors,
+      directors,
+      writers,
     } = req.body;
 
     if (title) movie.title = title.trim();
     if (releaseYear) movie.releaseYear = releaseYear;
-    if (genre) movie.genre = genre;
+    if (genre) {
+      // Split if string
+      if (typeof genre === "string" || genre instanceof String)
+        movie.genre = genre.split(/[ ,]+/);
+      else movie.genre = genre;
+    }
+
     if (runtime) movie.runtime = runtime;
     if (plot) movie.plot = plot.trim();
     if (rating) movie.rating = rating.trim();
     if (country) movie.country = country.trim();
+    if (image) movie.image = image.trim();
+
+    // Update people
+    movie.actors = actors;
+    movie.directors = directors;
+    movie.writers = writers;
+
+    const session = await mongoose.startSession();
+    await session.startTransaction();
 
     await movie.save();
+
+    // Add contribution
+    let contribution;
+
+    if (req.user) {
+      contribution = await Contribution.createContribution({
+        _user: req.user,
+        type: "Movie",
+        _item: movie._id,
+      });
+
+      if (!contribution) {
+        session.abortTransaction();
+        return res.status(401).json({ message: "Could not create movie" });
+      }
+    }
+
+    session.commitTransaction();
+
+    session.endSession();
 
     console.log(`== Movie ${movie.title} updated successfully`);
 
     // Return updated movie
-    return res.json(movie);
+    return res.json({
+      movie,
+      contribution,
+      message: "Movie updated successfully",
+    });
   } catch (error) {
     console.log("An error occured...");
     console.log(error);

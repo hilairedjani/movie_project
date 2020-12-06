@@ -75,7 +75,7 @@ const PersonProfile = () => {
                 >
                   <div className="row">
                     {person.movies.map((movie) => (
-                      <div key={movie._id} className="col-md-4 col-lg-3">
+                      <div key={movie._id} className="col-md-4 col-lg-3 pr-0">
                         <MovieItem movie={movie} />
                       </div>
                     ))}

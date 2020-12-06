@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { createMovie } from "../../app_actions/movies";
+import { createMovie, updateMovie } from "../../app_actions/movies";
 
 const initialState = {
   title: "",
@@ -18,13 +18,16 @@ const initialState = {
   writers: [],
 };
 
-const AddMovieForm = () => {
+const AddMovieForm = ({ movieId = null, showSearchTitle = true, action }) => {
+  const { error } = useSelector((state) => state.movies);
   const [formData, setFormData] = useState(initialState);
   const [searchPersonText, setSearchPersonText] = useState({
     writers: "",
     directors: "",
     actors: "",
   });
+
+  const [showMovieNotFound, setShowMovieNotFound] = useState(false);
 
   const [choosePerson, setChoosePerson] = useState({
     actors: [],
@@ -49,16 +52,37 @@ const AddMovieForm = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const searchPerson = async (type, name) => {
-    if (name.length < 3) {
-      setChoosePerson({ ...choosePerson, [`${type}`]: [] });
-      return;
-    }
+  const fetchMovieAndPopulateForm = async (_id) => {
+    try {
+      const response = await axios.get(`/movies/${_id}`);
+      const { data: movie } = response;
 
-    const response = await axios.get(
-      `/people?name=${name}&rank=${type.slice(0, -1)}`
-    );
-    setChoosePerson({ ...choosePerson, [`${type}`]: response.data.people });
+      if (movie) {
+        setFormData({ ...formData, ...movie });
+      } else {
+        setFormData({ ...formData, ...initialState });
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    // Fetch movie if id is present
+    if (movieId) fetchMovieAndPopulateForm(movieId);
+    return () => {};
+  }, [movieId]);
+
+  const searchPerson = async (type, name) => {
+    try {
+      if (name.length < 3) {
+        setChoosePerson({ ...choosePerson, [`${type}`]: [] });
+        return;
+      }
+
+      const response = await axios.get(
+        `/people?name=${name}&rank=${type.slice(0, -1)}`
+      );
+      setChoosePerson({ ...choosePerson, [`${type}`]: response.data.people });
+    } catch (error) {}
   };
 
   // Add person to list of people
@@ -96,6 +120,26 @@ const AddMovieForm = () => {
     });
   };
 
+  const handleSearchMovie = async (t) => {
+    try {
+      setShowMovieNotFound(false);
+      if (t.length < 1) return;
+
+      const title = t.replace(/\s+/g, "+");
+      const response = await axios.get(`/movies/scraper/title/${title}`);
+      const { movie } = response.data;
+
+      if (movie) {
+        setFormData({ ...formData, ...movie });
+      } else {
+        setFormData({ ...formData, ...initialState });
+      }
+    } catch (error) {
+      setShowMovieNotFound(true);
+      setFormData({ ...formData, ...initialState });
+    }
+  };
+
   const onChange = (event) =>
     setFormData({ ...formData, [event.target.name]: event.target.value });
 
@@ -122,7 +166,12 @@ const AddMovieForm = () => {
     const writers = extractPeopleIds(writersArr);
 
     // Split genres into string
-    const genre = splitGenres(genreString);
+    let genre;
+    if (typeof genreString === "string") {
+      genre = splitGenres(genreString);
+    } else {
+      genre = genreString;
+    }
 
     // Build movie object
     const movieData = {
@@ -139,27 +188,79 @@ const AddMovieForm = () => {
       writers,
     };
 
-    await dispatch(createMovie(movieData, history));
+    if (action == "create") await dispatch(createMovie(movieData, history));
+    else if (action == "update")
+      await dispatch(updateMovie(movieId, movieData, history));
   };
 
   return (
     <Fragment>
+      {error.length > 0 && (
+        <div className="row">
+          <div className="col text-white">
+            <div className="form-group bg-danger p-2">{error}</div>
+          </div>
+        </div>
+      )}
+
       <form id="add-actor-form" onSubmit={onSubmit}>
         <div className="row">
-          <div className="col-12">
-            <div className="form-group">
-              <label htmlFor="title">Title</label>
-              <input
-                className="form-control app-input"
-                type="text"
-                name="title"
-                value={title}
-                onChange={onChange}
-                required
-              />
-            </div>
-          </div>
+          {showSearchTitle ? (
+            <>
+              <div className="col">
+                <div className="form-group">
+                  <label htmlFor="title">Title</label>
 
+                  <input
+                    className="form-control app-input"
+                    type="text"
+                    name="title"
+                    value={title}
+                    onChange={onChange}
+                    required
+                  />
+                  {!showMovieNotFound && (
+                    <small className="form-text text-muted">
+                      You can type in the name of a movie and press search to
+                      find and autofill the form
+                    </small>
+                  )}
+                  {showMovieNotFound && (
+                    <small className="form-text text-danger">
+                      Could not find this movie
+                    </small>
+                  )}
+                </div>
+              </div>
+              <div className="col-auto mt-4">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => handleSearchMovie(title)}
+                  type="button"
+                >
+                  <i className="fas fa-search"></i>
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="col">
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+
+                <input
+                  className="form-control app-input"
+                  type="text"
+                  name="title"
+                  value={title}
+                  onChange={onChange}
+                  required
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="row">
           <div className="col-6">
             <div className="form-group">
               <label htmlFor="releaseYear">Release Year</label>
@@ -213,7 +314,7 @@ const AddMovieForm = () => {
             </div>
           </div>
 
-          <div className="col-6">
+          <div className="col-12">
             <div className="form-group">
               <label htmlFor="image">Image URL</label>
               <input
@@ -264,7 +365,7 @@ const AddMovieForm = () => {
         <h6>Directors</h6>
 
         <div className="row">
-          <div className="col">
+          <div className="col mb-1">
             {directors.map((director) => (
               <span
                 key={director._id}
@@ -281,22 +382,24 @@ const AddMovieForm = () => {
 
         <div className="row">
           <div className="col">
-            <label htmlFor="director-search">
-              Type in director's name to search
-            </label>
-            <input
-              className="form-control app-input"
-              type="text"
-              name="director-search"
-              value={searchPersonText.directors}
-              onChange={(e) => {
-                setSearchPersonText({
-                  ...searchPersonText,
-                  directors: e.target.value,
-                });
-                searchPerson("directors", e.target.value);
-              }}
-            />
+            <div className="form-group">
+              <input
+                className="form-control app-input"
+                type="text"
+                name="director-search"
+                value={searchPersonText.directors}
+                onChange={(e) => {
+                  setSearchPersonText({
+                    ...searchPersonText,
+                    directors: e.target.value,
+                  });
+                  searchPerson("directors", e.target.value);
+                }}
+              />
+              <small className="form-text text-muted">
+                Type in director's name to search
+              </small>
+            </div>
           </div>
         </div>
 
@@ -325,7 +428,7 @@ const AddMovieForm = () => {
         <h6>Actors</h6>
 
         <div className="row">
-          <div className="col">
+          <div className="col mb-1">
             {actors.map((actor) => (
               <span
                 key={actor._id}
@@ -342,20 +445,24 @@ const AddMovieForm = () => {
 
         <div className="row">
           <div className="col">
-            <label htmlFor="actor-search">Type in actor's name to search</label>
-            <input
-              className="form-control app-input"
-              type="text"
-              name="actor-search"
-              value={searchPersonText.actors}
-              onChange={(e) => {
-                setSearchPersonText({
-                  ...searchPersonText,
-                  actors: e.target.value,
-                });
-                searchPerson("actors", e.target.value);
-              }}
-            />
+            <div className="form-group">
+              <input
+                className="form-control app-input"
+                type="text"
+                name="actor-search"
+                value={searchPersonText.actors}
+                onChange={(e) => {
+                  setSearchPersonText({
+                    ...searchPersonText,
+                    actors: e.target.value,
+                  });
+                  searchPerson("actors", e.target.value);
+                }}
+              />
+              <small className="form-text text-muted">
+                Type in actors's name to search
+              </small>
+            </div>
           </div>
         </div>
 
@@ -384,7 +491,7 @@ const AddMovieForm = () => {
         <h6>Writers</h6>
 
         <div className="row">
-          <div className="col">
+          <div className="col mb-1">
             {writers.map((writer) => (
               <span
                 key={writer._id}
@@ -401,22 +508,24 @@ const AddMovieForm = () => {
 
         <div className="row">
           <div className="col">
-            <label htmlFor="writer-search">
-              Type in writer's name to search
-            </label>
-            <input
-              className="form-control app-input"
-              type="text"
-              name="writer-search"
-              value={searchPersonText.writers}
-              onChange={(e) => {
-                setSearchPersonText({
-                  ...searchPersonText,
-                  writers: e.target.value,
-                });
-                searchPerson("writers", e.target.value);
-              }}
-            />
+            <div className="form-group">
+              <input
+                className="form-control app-input"
+                type="text"
+                name="writer-search"
+                value={searchPersonText.writers}
+                onChange={(e) => {
+                  setSearchPersonText({
+                    ...searchPersonText,
+                    writers: e.target.value,
+                  });
+                  searchPerson("writers", e.target.value);
+                }}
+              />
+              <small className="form-text text-muted">
+                Type in writer's name to search
+              </small>
+            </div>
           </div>
         </div>
 

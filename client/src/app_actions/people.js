@@ -79,12 +79,8 @@ export const createPerson = (personData, history) => async (dispatch) => {
     console.log(error);
 
     dispatch({
-      type: GET_PEOPLE_ERROR,
-      payload: error.response.data.message,
-    });
-
-    dispatch({
       type: CREATE_PERSON_FAIL,
+      payload: error.response.data.message,
     });
   }
 };

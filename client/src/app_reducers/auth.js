@@ -54,6 +54,7 @@ const authReducer = (state = initialState, { type, payload }) => {
         success: true,
         isAuthenticated: true,
         loading: false,
+        error: "",
         message: "You have been registered successfully.",
       };
 
@@ -64,6 +65,7 @@ const authReducer = (state = initialState, { type, payload }) => {
         ...payload,
         success: true,
         isAuthenticated: true,
+        error: "",
         loading: false,
         message: "You are now logged in.",
       };
@@ -79,7 +81,7 @@ const authReducer = (state = initialState, { type, payload }) => {
         isAuthenticated: false,
         loading: false,
         message: "",
-        error: "An error occured...",
+        error: payload,
       };
 
     case LOGOUT_SUCCESS:

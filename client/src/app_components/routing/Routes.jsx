@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import Login from "../auth/Login";
 import Register from "../auth/Register";
 import AddContribution from "../contributions/AddContribution";
+import EditMovie from "../movies/EditMovie";
 import Movie from "../movies/Movie";
 import Movies from "../movies/Movies";
 import People from "../people/People";
@@ -19,6 +20,7 @@ function Routes() {
       <Route exact path="/login" component={Login} />
       <Route exact path="/movies" component={Movies} />
       <Route exact path="/movies/:_id" component={Movie} />
+      <PrivateRoute exact path="/movies/:_id/edit" component={EditMovie} />
       <Route exact path="/people/:_id" component={PersonProfile} />
       <Route exact path="/people" component={People} />
       <PrivateRoute exact path="/profiles" component={Profiles} />

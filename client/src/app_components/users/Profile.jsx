@@ -5,6 +5,7 @@ import { getProfile } from "../../app_actions/users";
 import Contributions from "../contributions/Contributions";
 import PeopleConnections from "../peopleConnections/PeopleConnections";
 import EditProfileModal from "./EditProfileModal";
+import UserReviews from "../reviews/UserReviews";
 import Followers from "./Followers";
 import Followings from "./Followings";
 
@@ -125,6 +126,18 @@ function Profile() {
                   >
                     People
                   </a>
+
+                  <a
+                    className="nav-link"
+                    role="tab"
+                    href="#reviews-tab-pane"
+                    id="reviews-nav-tab"
+                    data-toggle="tab"
+                    aria-controls="reviews-tab-pane"
+                    aria-selected="false"
+                  >
+                    Reviews
+                  </a>
                 </div>
               </nav>
 
@@ -163,6 +176,14 @@ function Profile() {
                   role="tabpanel"
                 >
                   <PeopleConnections _user={profile._id} />
+                </div>
+
+                <div
+                  className="tab-pane fade"
+                  id="reviews-tab-pane"
+                  role="tabpanel"
+                >
+                  <UserReviews _user={profile._id} />
                 </div>
               </div>
             </div>

@@ -30,17 +30,13 @@ export const login = (userData) => async (dispatch) => {
     });
 
     // Set current user
-    // await dispatch(setCurrentUser());
+    await dispatch(setCurrentUser());
   } catch (error) {
     console.log(error.response);
 
     dispatch({
-      type: GET_ERROR,
-      payload: error.response.data.message,
-    });
-
-    dispatch({
       type: LOGIN_FAIL,
+      payload: error.response.data.message,
     });
   }
 };
@@ -66,12 +62,8 @@ export const register = (newUser) => async (dispatch) => {
     console.log(error);
 
     dispatch({
-      type: GET_ERROR,
-      payload: error.response.data.message,
-    });
-
-    dispatch({
       type: REGISTER_FAIL,
+      payload: error.response.data.message,
     });
   }
 };

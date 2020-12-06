@@ -40,7 +40,11 @@ contributionSchema.methods = {};
 contributionSchema.statics = {
   // Create a new contribution
   createContribution: async function ({ _user, type, _item }) {
-    const contribution = await new this({
+    let contribution = await this.findOne({ _user, type, _item });
+
+    if (contribution) return contribution;
+
+    contribution = await new this({
       _user,
       type,
       _item,

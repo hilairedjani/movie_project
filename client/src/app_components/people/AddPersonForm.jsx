@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { createPerson } from "../../app_actions/people";
 
@@ -13,6 +13,7 @@ const ranks = ["actor", "director", "writer"];
 
 const AddPersonForm = () => {
   const [formData, setFormData] = useState(initialState);
+  const { error } = useSelector((state) => state.people);
 
   const { firstname, lastname, rank } = formData;
 
@@ -39,6 +40,14 @@ const AddPersonForm = () => {
 
   return (
     <Fragment>
+      {error.length > 0 && (
+        <div className="row">
+          <div className="col text-white">
+            <div className="form-group bg-danger p-2">{error}</div>
+          </div>
+        </div>
+      )}
+
       <form id="add-actor-form" onSubmit={onSubmit}>
         <div className="row">
           <div className="col-6">

@@ -39,7 +39,8 @@ const Review = require("../models/review");
 
     // Adding users
     let user = null,
-      contributor = null;
+      contributor = null,
+      contributors = [];
     for (let i = 0; i < 5; i++) {
       contributor = await User.createUser({
         firstname: "User",
@@ -50,6 +51,7 @@ const Review = require("../models/review");
         role: "contributor",
       });
       console.log(`== Adding user ${contributor.username} to database`);
+      contributors.push(contributor);
 
       user = await User.createUser({
         firstname: "John",
@@ -187,12 +189,17 @@ const Review = require("../models/review");
       await movie.save();
 
       // Add a few reviews for this movie
-      for (let i = 1; i <= 5; i++) {
+      for (let i = 0; i < 5; i++) {
         console.log(`== Adding review ${i} to movie ${movie.title}`);
-        await Review.createReview(contributor._id, movie._id, {
-          value: i,
-          reviewText: `Review: ${i} for movie: ${movie.title} by user: ${contributor.username}`,
+        const r = await Review.createReview(contributors[i]._id, movie._id, {
+          value: i + 1,
+          briefSummary: `Review: ${i} for movie: ${movie.title} by user: ${contributors[i].username}`,
+          fullText: `Review: ${i} for movie: ${movie.title} by user: ${contributors[i].username} but the long version`,
         });
+
+        // Increment movie review total and review count
+        await movie.updateMovieReview(i);
+        await movie.save();
       }
     }
 

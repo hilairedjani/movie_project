@@ -15,6 +15,7 @@ const {
   addDirector,
   addWriter,
   deleteMovie,
+  scraper,
 } = require("../controllers/movies");
 
 // == GET ROUTES
@@ -35,11 +36,18 @@ router.get("/", getMovies);
 router.get("/popular", getPopularMovies);
 
 /**
- * @route GET api/movies/:id
+ * @route GET /movies/:id
  * @description Get movie by id
  * @access Public
  */
-router.get("/:id", authorize, getMovieById);
+router.get("/:id", getMovieById);
+
+/**
+ * @route GET api/movies/:title
+ * @description Scrape movie by title
+ * @access Public
+ */
+router.get("/scraper/title/:title", scraper);
 
 // == POST ROUTES
 

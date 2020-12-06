@@ -20,7 +20,7 @@ const Navbar = () => {
   );
 
   const authLinks = (
-    <div className="col-auto mt-auto">
+    <div className="col-auto mt-auto ml-auto">
       <Link to={`/movies`} className="font-weight-bold h6 text-muted">
         <i className="fas fa-video"></i> Movies
       </Link>
@@ -53,7 +53,7 @@ const Navbar = () => {
     <div className="row">
       <div className="col-12 pt-2">
         <div className="row">
-          <div className="col">
+          <div className="col-auto">
             <Link to="/" className="font-weight-bold h1 text-white">
               <i className="fas fa-film"></i>&nbsp;Movies 55
             </Link>
