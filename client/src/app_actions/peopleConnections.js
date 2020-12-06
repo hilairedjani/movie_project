@@ -36,8 +36,6 @@ export const getPeopleConnections = (_user) => async (dispatch) => {
  */
 export const followPerson = (_person) => async (dispatch) => {
   try {
-    dispatch({ type: PEOPLE_CONNECTIONS_LOADING });
-
     // API call to create a person
     const response = await axios.post(`/peopleConnections/_person/${_person}`);
 
@@ -58,8 +56,6 @@ export const followPerson = (_person) => async (dispatch) => {
  */
 export const unfollowPerson = (_person) => async (dispatch) => {
   try {
-    dispatch({ type: PEOPLE_CONNECTIONS_LOADING });
-
     // API call to create a person
     const response = await axios.delete(
       `/peopleConnections/_person/${_person}`

@@ -59,7 +59,7 @@ export const getCurrentProfile = () => async (dispatch) => {
 /**
  * @description Get profiles
  */
-export const getProfiles = (skip, limit) => async (dispatch) => {
+export const getProfiles = (skip, limit = 40) => async (dispatch) => {
   try {
     dispatch({ type: PROFILES_LOADING });
 

@@ -59,8 +59,6 @@ export const getFollowings = (_follower) => async (dispatch) => {
  */
 export const followUser = (_following) => async (dispatch) => {
   try {
-    dispatch({ type: USERS_CONNECTIONS_LOADING });
-
     // API call to follow a user
     const response = await axios.post(
       `/usersConnections/_following/${_following}`
@@ -85,8 +83,6 @@ export const followUser = (_following) => async (dispatch) => {
  */
 export const unfollowUser = (_following) => async (dispatch) => {
   try {
-    dispatch({ type: USERS_CONNECTIONS_LOADING });
-
     // API call to unfollow a user
     const response = await axios.delete(
       `/usersConnections/_following/${_following}`

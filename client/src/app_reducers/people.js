@@ -58,7 +58,7 @@ const peopleReducer = (state = initialState, { type, payload, skip = 0 }) => {
         loading: false,
         success: true,
         message: payload.message,
-        person: payload.person,
+        person: null,
         error: "",
       };
 

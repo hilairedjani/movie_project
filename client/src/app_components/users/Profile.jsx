@@ -8,12 +8,20 @@ import EditProfileModal from "./EditProfileModal";
 import UserReviews from "../reviews/UserReviews";
 import Followers from "./Followers";
 import Followings from "./Followings";
+import { followUser, unfollowUser } from "../../app_actions/usersConnections";
+import { isFollowingUser } from "../../app_helpers";
 
 function Profile() {
-  const { profile, loading } = useSelector((state) => state.users);
+  const { profile, currentProfile, loading } = useSelector(
+    (state) => state.users
+  );
   const { user } = useSelector((state) => state.auth);
   const { _id } = useParams();
   const dispatch = useDispatch();
+
+  const handleFollowClick = () => dispatch(followUser(profile._id));
+
+  const handleUnfollowClick = () => dispatch(unfollowUser(profile._id));
 
   useEffect(() => {
     dispatch(getProfile(_id));
@@ -68,6 +76,24 @@ function Profile() {
                       <i className="fas fa-pencil-alt"></i>
                     </button>
                   </div>
+                )}
+
+                {isFollowingUser(profile._id, currentProfile.following) ? (
+                  <button
+                    type="button"
+                    onClick={handleUnfollowClick}
+                    className="btn btn-outline-secondary btn-block"
+                  >
+                    Following
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleFollowClick}
+                    className="btn btn-primary btn-block"
+                  >
+                    Follow
+                  </button>
                 )}
               </div>
             </div>
