@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 
 import { getPopularMovies } from "../../app_actions/movies";
 import MovieSearchBar from "../movies/MovieSearchBar";
@@ -9,6 +9,7 @@ const Landing = () => {
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
   const { popularMovies } = useSelector((state) => state.movies);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     dispatch(getPopularMovies());
@@ -45,12 +46,15 @@ const Landing = () => {
                     <div
                       className={`carousel-item ${index == 0 ? "active" : ""}`}
                       key={movie._id}
+                      style={{ cursor: "ponter" }}
+                      onClick={() => history.push(`/movies/${movie._id}`)}
                     >
                       <img
                         src={`${movie.image}`}
+                        style={{ cursor: "ponter" }}
                         className="d-block w-100"
                         alt="..."
-                      />{" "}
+                      />
                       <div className="carousel-caption d-none d-md-block bg-dark">
                         {movie.title}
                       </div>
