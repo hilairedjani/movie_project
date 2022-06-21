@@ -3,6 +3,7 @@ const http = require("http");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const socketIo = require("socket.io");
+const path = require('path');
 
 const { connectDatabase } = require("./db");
 // const socket = require("./middleware/socket");
@@ -63,6 +64,19 @@ app.use("/usersConnections", require("./routes/usersConnections"));
 
 // Connect database
 connectDatabase();
+
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, './client/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, './', 'frontend', 'client', 'index.html')
+    )
+  );
+} else {
+  app.get('/', (req, res) => res.send('Please set to production'));
+}
 
 io.on("connection", (socket) => {
   console.log(`== Connected: Client ${socket.id} just connected`);
